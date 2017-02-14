@@ -24,11 +24,20 @@ gem 'jquery-rails', '3.1.3'
 
 # gem 'heroku' install the Heroku toolbelt (https://toolbelt.heroku.com/) instead (as gem had some problems)
 gem "passenger", "~> 5.0.30"
+gem 'puma'
+gem 'puma-heroku'
 
 gem "mysql2", "~> 0.4.4"
 gem 'haml', "~> 4.0.5"
 gem 'sass', "  ~> 3.2.9"
 gem 'rest-client', '~> 1.8.0'
+
+
+# NOTE: THIS MUST APPEAR BEFORE ANY REFERENCES TO DELAYED_JOB GEM
+# This gem was added to make Rails 3.2 -> 4 upgrade path easier.
+# It adds `attr_protected` and `attr_accessor` methods to models.
+# We should remove this gem before upgrading to Rails 5
+gem 'protected_attributes', "~> 1.1.3"
 
 gem 'paperclip', '~> 5.1.0'
 gem 'delayed_paperclip', "~> 3.0"
@@ -40,8 +49,8 @@ gem "memcachier", "~> 0.0.2"
 gem 'readthis', "~> 2.0.1"
 gem 'hiredis'
 gem 'kgio', "~>2.9.2"
-gem 'thinking-sphinx', '~> 3.1.1'
-gem 'flying-sphinx', "~>1.2.0"
+gem 'thinking-sphinx', '3.1.0'
+gem 'flying-sphinx', "1.2.0"
 # Use patched v2.0.2
 # Fixes issues: Create a new delayed delta job if there is an existing delta job which has failed
 gem 'ts-delayed-delta', "~>2.0.2",
@@ -96,11 +105,6 @@ gem 'public_suffix', "~> 1.5.1" # Needed currently to set GA hostname right, pro
 # Session store was removed from Rails 4
 gem 'activerecord-session_store', "~> 1.0.0.pre"
 
-# This gem was added to make Rails 3.2 -> 4 upgrade path easier.
-# It adds `attr_protected` and `attr_accessor` methods to models.
-# We should remove this gem before upgrading to Rails 5
-gem 'protected_attributes', "~> 1.1.3"
-
 # Remove Emojis.
 # This will prevent MySQL from blowing up if someone's trying to insert Emojis
 # This gem was inserted to make Rails 3->4 migration path easier. However,
@@ -127,6 +131,8 @@ gem "i18n-js",
 
 # A store scoped to the request object for caching
 gem "request_store", "~> 1.3"
+gem "asset_sync"
+gem "fog-aws"
 
 group :staging, :production do
   gem 'newrelic_rpm', '~> 3.9.1.236'
@@ -159,7 +165,7 @@ group :test do
 
   gem 'cucumber-rails', '~> 1.4.0', require: false # require: false is needed for cucumber-rails
 
-  gem 'selenium-webdriver', '~> 2.45'
+  gem 'selenium-webdriver', '3.0.8'
 
   # Launchy is needed by Capybara, e.g. save_and_open command needs Launchy to open a browser
   gem 'launchy', '~> 2.4', '>= 2.4.3'

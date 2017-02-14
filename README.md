@@ -33,7 +33,7 @@ Would you like to set up your marketplace in one minute without touching code? [
 - Server: Heroku
 - Image hosting: Amazon S3  
 - Background job: `[delayed_job](https://github.com/collectiveidea/delayed_job)`
-- Gem: 
+- Gem:
     -  [devise](https://github.com/plataformatec/devise) | Authentication
     -  [omniauth-facebook](https://github.com/mkdynamic/omniauth-facebook) | Third party login: Facebook
     -  [haml](https://github.com/haml/haml) and ERB | HTML teamplating
@@ -415,6 +415,17 @@ For a better high-level understanding of what the Sharetribe core team is workin
 Sharetribe uses [WebTranslateIt (WTI)](https://webtranslateit.com/en) for translations. If you'd like to translate Sharetribe to your language or improve existing translations, please ask for a WTI invitation. To get an invite, send an email to [info@sharetribe.com](mailto:info@sharetribe.com) and mention that you would like to become a translator.
 
 All language additions and modifications (except for English) should be done through the WTI tool. We do not accept Pull Requests that add or modify languages (except English).
+
+## Applications
+
+### Anapog
+
+Theme colors used in Purple Theme:
+
+Theme: 114	27	121	#721B79
+Button: 176	108	90	#B06C5A
+Black: 55	55	55
+
 
 
 ## Known issues

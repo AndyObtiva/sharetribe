@@ -95,6 +95,13 @@ module ListingIndexService::Search
         begin
           DatabaseSearchHelper.success_result(models.total_entries, models, includes)
         rescue ThinkingSphinx::SphinxError => e
+          Rails.logger.error 'Failed during search with sphinx (see parameters/exception below)!'
+          Rails.logger.error "community_id: #{community_id.inspect}"
+          Rails.logger.error "search: #{search.inspect}"
+          Rails.logger.error "included_models: #{included_models.inspect}"
+          Rails.logger.error "includes: #{includes.inspect}"
+          Rails.logger.error e.message
+          Rails.logger.error e.backtrace.join("\n")
           Result::Error.new(e)
         end
       end

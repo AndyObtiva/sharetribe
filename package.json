@@ -6,8 +6,7 @@
   },
   "scripts": {
     "postinstall": "cd client && npm install",
-    "clean": "rm -f app/assets/webpack/*",
-    "heroku-postbuild": "npm run postinstall"
+    "clean": "rm -f app/assets/webpack/*"
   },
   "cacheDirectories": ["node_modules", "client/node_modules"]
 }
