@@ -29,3 +29,4 @@ class ListingImageJSAdapter < JSAdapter
     HashUtils.camelize_keys(hash)
   end
 end
+ListingImageJSAdapter = ListingImageJsAdapter

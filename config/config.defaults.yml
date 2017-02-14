@@ -4,14 +4,14 @@ default: &default_settings
   # If you are running on localhost, you can write here "lvh.me:3000" (which redirects to localhost port 3000)
   # The community subdomains will be added to this top domain.
   # NOTE: Do not include http(s) here, or subdomains, just the top level domain, like "sharetribe.com" for example
-  domain: "lvh.me:3000"
+  domain: "anapog.herokuapp.com"
 
   # If you want to make logins work across different subdomains you should put here the domain where you are running Sharetribe.
   # practically in most cases the same value as in "domain:"
   # The session cookies will apply for the whole domain. If this is not needed you can leave this empty.
   # If you use domain aliases e.g. sharetribe.eu & sharetribe.cl, leave this empty.
   # NOTE: Do not include http(s) here, or subdomains, just the top level domain, like "sharetribe.com" for example
-  session_domain:
+  session_domain: "anapog.herokuapp.com"
 
   # Redirect to this URL if community can not be found. For example, if user is trying to access community
   # http://nonexisting.sharetribe.com and there's no community named "nonexisting", then the user is redirected
@@ -19,7 +19,7 @@ default: &default_settings
   #
   # Example value: http://mydomain.com
   #
-  community_not_found_redirect:
+  community_not_found_redirect: "anapog.herokuapp.com"
 
   # Login url. This can be a separate address for loggin in. For example
   # a subdomain with https. It's recommended to use https here, so passwords
@@ -34,7 +34,7 @@ default: &default_settings
   # NOTE: in Heroku you can't store files in local system, so S3 should be used
 
   # Default bucket
-  s3_bucket_name:
+  s3_bucket_name: 'anapog-production'
 
   # AWS S3 region
   s3_region: us-east-1
@@ -45,13 +45,13 @@ default: &default_settings
   s3_cache_max_age: 86400
 
   # Bucket for files users upload directly to S3. You can add an expiration policy to these files.
-  s3_upload_bucket_name:
+  s3_upload_bucket_name: 'anapog-tmp-production'
 
   # Server assets directly from the Rails application, defaults to true
   #
   # Recommended setup: Set serve_static_files to true and setup CDN distribution
   # Alternative setup: Set serve_static_files to false and setup Nginx/Apache in front of the Rails servers
-  serve_static_files: true
+  serve_static_files: <%= ENV['serve_static_files'].to_s.downcase == 'true' %>
 
   # Your CDN distribution host name
   #
@@ -67,7 +67,7 @@ default: &default_settings
   # - 0c84dc78c9435aec606bbf2428c2c476.cloudfront.com
   # - assets%0.your_domain.com
   #
-  asset_host:
+  asset_host: "<%= ENV['asset_host'] %>"
 
   # Your user-uploaded assets CDN distribution host name, including the desired protocol (http or https).
   #
@@ -82,11 +82,11 @@ default: &default_settings
   #
   # - https://yourdistribution.cloudfront.com
   #
-  user_asset_host:
+  user_asset_host: "<%= ENV['user_asset_host'] %>"
 
   # AWS keys
-  aws_access_key_id:
-  aws_secret_access_key:
+  aws_access_key_id: "<%= ENV['AWS_ACCESS_KEY_ID'] %>"
+  aws_secret_access_key: "<%= ENV['AWS_SECRET_ACCESS_KEY'] %>"
 
   # This is used with AWS SNS notifications. You need to create "email bounces and complaints" topic to SNS
   # and subscribe an url (https://yourdomain.com/bounces?sns_notification_token=[this_token])
@@ -328,7 +328,7 @@ default: &default_settings
 
   # Default Google Maps API key for communities that don't specify one
   # Default is not to use Google Maps API key
-  google_maps_key:
+  google_maps_key: "AIzaSyBrtQHIdZg7s01sEx4gz0pworX63m9FGC4"
 
   # Force displaying big cover photo whether signed in or not
   big_cover_photo: <%= (ENV['SHARETRIBE_BIG_COVER_PHOTO'] || true).to_s.downcase == 'true' %>
