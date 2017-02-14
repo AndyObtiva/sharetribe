@@ -372,6 +372,7 @@ class ApplicationController < ActionController::Base
   #
   def after_sign_in_path_for(resourse)
     if session[:return_to_content]
+      flash[:notice] = flash.alert if flash.alert # Devise sets flash.alert in case already logged in
       return_to_path = session[:return_to_content]
       session[:return_to_content] = nil
       return_to_path
