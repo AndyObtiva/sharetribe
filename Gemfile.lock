@@ -299,7 +299,6 @@ GEM
     multi_test (0.1.2)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
-    mysql (2.9.1)
     mysql2 (0.4.4)
     nenv (0.3.0)
     netrc (0.11.0)
@@ -578,7 +577,6 @@ DEPENDENCIES
   mercury-rails!
   meta_request (~> 0.3)
   money-rails (~> 1.4.0)
-  mysql
   mysql2 (~> 0.4.4)
   newrelic_rpm (~> 3.9.1.236)
   oauth2!
