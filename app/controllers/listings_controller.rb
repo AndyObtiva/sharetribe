@@ -770,7 +770,7 @@ class ListingsController < ApplicationController
         end
         redirect_to search_path and return
       else
-        session[:return_to] = request.fullpath
+        session[:return_to_content] = request.fullpath
         flash[:warning] = t("layouts.notifications.you_must_log_in_to_view_this_content")
         redirect_to login_path and return
       end

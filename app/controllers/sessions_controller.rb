@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
 
   def new
     if params[:return_to].present?
-      session[:return_to] = params[:return_to]
+      session[:return_to_content] = params[:return_to]
     end
 
     @selected_tribe_navi_tab = "members"
@@ -65,10 +65,7 @@ class SessionsController < ApplicationController
     end
 
     flash[:notice] = t("layouts.notifications.login_successful", person_name: view_context.link_to(@current_user.given_name_or_username, person_path(@current_user))).html_safe
-    if session[:return_to]
-      redirect_to session[:return_to]
-      session[:return_to] = nil
-    elsif session[:return_to_content]
+    if session[:return_to_content]
       redirect_to session[:return_to_content]
       session[:return_to_content] = nil
     else

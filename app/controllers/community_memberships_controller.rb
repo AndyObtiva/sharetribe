@@ -75,9 +75,9 @@ class CommunityMembershipsController < ApplicationController
 
       flash[:notice] = t("layouts.notifications.you_are_now_member")
 
-      if session[:return_to]
-        redirect_to session[:return_to]
-        session[:return_to] = nil
+      if session[:return_to_content]
+        redirect_to session[:return_to_content]
+        session[:return_to_content] = nil
       else
         redirect_to search_path
       end

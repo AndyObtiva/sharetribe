@@ -234,7 +234,7 @@ class ApplicationController < ActionController::Base
     if logged_in?
       true
     else
-      session[:return_to] = request.fullpath
+      save_current_path
       flash[:warning] = warning_message
       redirect_to login_path
 
@@ -371,9 +371,9 @@ class ApplicationController < ActionController::Base
   # Return path where you want the user to be redirected to.
   #
   def after_sign_in_path_for(resourse)
-    if session[:return_to]
-      return_to_path = session[:return_to]
-      session[:return_to] = nil
+    if session[:return_to_content]
+      return_to_path = session[:return_to_content]
+      session[:return_to_content] = nil
       return_to_path
     else
       search_path

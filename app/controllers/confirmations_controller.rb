@@ -51,9 +51,9 @@ class ConfirmationsController < Devise::ConfirmationsController
         report_to_gtm({event: "admin_email_confirmed"})
         redirect_to admin_getting_started_guide_path and return
       elsif @current_user # normal logged in user
-        if session[:return_to]
-          redirect_to session[:return_to]
-          session[:return_to] = nil
+        if session[:return_to_content]
+          redirect_to session[:return_to_content]
+          session[:return_to_content] = nil
         else
           redirect_to search_path
         end
