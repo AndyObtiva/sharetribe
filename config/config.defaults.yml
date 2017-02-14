@@ -11,7 +11,7 @@ default: &default_settings
   # The session cookies will apply for the whole domain. If this is not needed you can leave this empty.
   # If you use domain aliases e.g. sharetribe.eu & sharetribe.cl, leave this empty.
   # NOTE: Do not include http(s) here, or subdomains, just the top level domain, like "sharetribe.com" for example
-  session_domain:
+  session_domain: "lvh.me:3000"
 
   # Redirect to this URL if community can not be found. For example, if user is trying to access community
   # http://nonexisting.sharetribe.com and there's no community named "nonexisting", then the user is redirected
@@ -19,7 +19,7 @@ default: &default_settings
   #
   # Example value: http://mydomain.com
   #
-  community_not_found_redirect:
+  community_not_found_redirect: "lvh.me:3000"
 
   # Login url. This can be a separate address for loggin in. For example
   # a subdomain with https. It's recommended to use https here, so passwords
@@ -85,8 +85,8 @@ default: &default_settings
   user_asset_host:
 
   # AWS keys
-  aws_access_key_id:
-  aws_secret_access_key:
+  aws_access_key_id: "AKIAJMBI34FNAIU4Z22A"
+  aws_secret_access_key: "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"
 
   # This is used with AWS SNS notifications. You need to create "email bounces and complaints" topic to SNS
   # and subscribe an url (https://yourdomain.com/bounces?sns_notification_token=[this_token])

@@ -71,6 +71,8 @@ class Admin::CommunityCustomizationsController < Admin::AdminBaseController
       flash[:notice] = t("layouts.notifications.community_updated")
     else
       flash[:error] = t("layouts.notifications.community_update_failed")
+      flash[:error] += " Not all results updated. " unless update_results.all?
+      flash[:error] += " Processing locales and enabled locales #{enabled_locales.inspect} are invalid by not including locale #{locale}" unless process_locales && enabled_locales_valid
     end
 
     redirect_to admin_details_edit_path
