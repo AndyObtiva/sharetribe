@@ -101,18 +101,34 @@ FactoryGirl.define do
     end
   end
 
+  factory :seed_person, parent: :person do
+    given_name {Faker::Name.first_name}
+    family_name {Faker::Name.last_name}
+    phone_number {Faker::PhoneNumber.phone_number.sub(/\d{3}$/, '555')}
+  end
+
   factory :listing do
     community_id 999
     title "Sledgehammer"
     description("test")
     build_association(:author)
-    category { TestHelpers::find_or_build_category("item") }
     valid_until 3.months.from_now
     times_viewed 0
     privacy "public"
     listing_shape_id 123
     price Money.new(20, "USD")
     uuid
+    after(:build) do |l, evaluator|
+      l.category = TestHelpers::find_or_build_category("item") unless l.category || l.category_id
+    end
+  end
+
+  factory :seed_listing, parent: :listing do
+    title "I can carry #{Faker::Commerce.product_name}"
+    association :author, factory: :seed_person
+    price {Money.new(Faker::Number.number(2), "USD")}
+    category_id { Category.joins(:translations).where("category_translations.name like '% Category'").pluck(:id).sample }
+    community_id 1
   end
 
   factory :transaction do
@@ -245,6 +261,19 @@ FactoryGirl.define do
   factory :category do
     icon "item"
     build_association(:community)
+  end
+
+  factory :seed_category, parent: :category do
+    ignore do
+      name nil
+    end
+    icon "item"
+    community nil
+    community_id 1
+    after(:create) do |c, evaluator|
+      translation_name = evaluator.name || "#{Faker::Commerce.unique.department(1, true)} Category"
+      FactoryGirl.create(:category_translation, name: translation_name, category_id: c.id)
+    end
   end
 
   factory :category_translation do
