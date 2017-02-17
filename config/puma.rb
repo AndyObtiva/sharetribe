@@ -9,7 +9,7 @@ if ENV['RAILS_ENV'] == 'production'
    ActiveRecord::Base.connection_pool.disconnect!
   end
 else
-  threads 4,4
+  threads 1,1
   workers 4
 end
 if ENV['PUMA_PRELOAD_APP'].to_s.downcase == 'true'
