@@ -139,10 +139,14 @@ group :staging, :production do
   gem 'rails_12factor', '~> 0.0.3'
 end
 
-group :development, :test do
-  gem 'rubocop', '~> 0.37.2', require: false
+# Seeding libraries useful in production on top of testing
+group :development, :test, :staging, :production do
   gem 'factory_girl_rails', "~> 4.4.1"
   gem 'faker', '~> 1.7.3'
+end
+
+group :development, :test do
+  gem 'rubocop', '~> 0.37.2', require: false
 end
 
 group :development, :staging do
