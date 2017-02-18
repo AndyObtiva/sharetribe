@@ -420,12 +420,17 @@ All language additions and modifications (except for English) should be done thr
 
 ### Anapog
 
-Theme colors used in Purple Theme:
+Here are some theme colors for record.
 
+Purple Theme:
 Theme: 114	27	121	#721B79
 Button: 176	108	90	#B06C5A
 Black: 55	55	55
 
+Green Theme:
+Theme: 1	55	33 #013721
+Button: 112	20	47 #70142f
+Black: 55	55	55
 
 
 ## Known issues

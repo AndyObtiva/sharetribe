@@ -344,6 +344,9 @@ default: &default_settings
   # Default is not to use Google Maps API key
   google_maps_key: "AIzaSyBrtQHIdZg7s01sEx4gz0pworX63m9FGC4"
 
+  # Force displaying big cover photo whether signed in or not
+  big_cover_photo: <%= ENV['SHARETRIBE_BIG_COVER_PHOTO'].to_s.downcase == 'true' %>
+
   # Path or URL for landing page assets.
   #
   # Because a directory is expected, it's recommended to include trailing slash.
