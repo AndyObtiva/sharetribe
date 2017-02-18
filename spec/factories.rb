@@ -268,7 +268,7 @@ FactoryGirl.define do
       name nil
     end
     icon "item"
-    community {Community.find_by(id: 1)}
+    community {Community.find_by(id: 1) || FactoryGirl.create(:community)}
     after(:create) do |category, evaluator|
       if evaluator.name
         translation_name = evaluator.name
