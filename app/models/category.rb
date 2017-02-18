@@ -69,7 +69,8 @@ class Category < ActiveRecord::Base
   end
 
   def default_translation_without_cache
-    (translations.reload.find { |translation| translation.locale == community.default_locale } || translations.first)
+    translations.reload if translations.empty?
+    (translations.find { |translation| translation.locale == community.default_locale } || translations.first)
   end
 
   # TODO this should be done on service layer
