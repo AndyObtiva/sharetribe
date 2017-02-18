@@ -126,7 +126,7 @@ FactoryGirl.define do
   factory :seed_listing, parent: :listing do
     title {"I can ship #{Faker::Commerce.product_name}"}
     association :author, factory: :seed_person
-    price {Money.new(Faker::Number.number(2), "USD")}
+    price {Money.new(Faker::Number.number(2).to_i*100, "USD")}
     category_id { Category.joins(:translations).where("category_translations.name like '% Category'").pluck(:id).sample }
     community_id 1
   end
