@@ -18,6 +18,7 @@ describe 'Seeds' do
   before do
     # Run twice to ensure it refreshes data and does not destroy data available
     # before seeding
+    ENV['SAMPLE_SEEDS'] = 'true'
     load Rails.root.join('db', 'seeds.rb').to_s
     load Rails.root.join('db', 'seeds.rb').to_s
   end
