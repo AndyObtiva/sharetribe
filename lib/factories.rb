@@ -5,7 +5,7 @@
 # - Factories should NEVER write anything to database if .build is used. So when building associations,
 #   make sure they are not written to DB.
 
-require "#{Rails.root}/test/helper_modules"
+require "#{Rails.root}/lib/helper_modules"
 
 class FactoryGirl::DefinitionProxy
 
