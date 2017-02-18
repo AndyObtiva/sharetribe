@@ -170,17 +170,13 @@ module TestHelpers
 
   def find_or_build_category(category_translation)
     TestHelpers::find_category_by_name(category_translation) ||
-      FactoryGirl.build(:category).tap do |c|
-        FactoryGirl.build(:category_translation, category: c, name: name)
-      end
+      FactoryGirl.build(:category)
   end
   module_function :find_or_build_category
 
   def find_or_create_seed_category(name)
-    TestHelpers::find_category_by_name(category_translation) ||
-      FactoryGirl.create(:category).tap do |c|
-        FactoryGirl.create(:category_translation, category: c, name: name)
-      end
+    TestHelpers::find_category_by_name(name) ||
+      FactoryGirl.create(:seed_category, name: name)
   end
   module_function :find_or_create_seed_category
 

@@ -124,7 +124,7 @@ FactoryGirl.define do
   end
 
   factory :seed_listing, parent: :listing do
-    title {"I can carry #{Faker::Commerce.product_name}"}
+    title {"I can ship #{Faker::Commerce.product_name}"}
     association :author, factory: :seed_person
     price {Money.new(Faker::Number.number(2), "USD")}
     category_id { Category.joins(:translations).where("category_translations.name like '% Category'").pluck(:id).sample }
@@ -268,11 +268,21 @@ FactoryGirl.define do
       name nil
     end
     icon "item"
-    community nil
-    community_id 1
-    after(:create) do |c, evaluator|
-      translation_name = evaluator.name || "#{Faker::Commerce.unique.department(1, true)} Category"
-      FactoryGirl.create(:category_translation, name: translation_name, category_id: c.id)
+    community {Community.find_by(id: 1)}
+    after(:create) do |category, evaluator|
+      if evaluator.name
+        translation_name = evaluator.name
+      else
+        begin
+          faker_value = Faker::Commerce.unique.department(1, true)
+        rescue Faker::UniqueGenerator::RetryLimitExceeded => e
+          Faker::Commerce.unique.clear
+          faker_value = Faker::Commerce.unique.department(1, true)
+        end
+        translation_name = "#{faker_value} Category"
+      end
+      t = FactoryGirl.create(:category_translation, name: translation_name, category_id: category.id, locale: 'en')
+      category.update_column(:url, category.uniq_url)
     end
   end
 
