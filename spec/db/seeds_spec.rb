@@ -31,5 +31,12 @@ describe 'Seeds' do
     initial_excluded_model_counts.each do |excluded_model, initial_excluded_model_count|
       expect("#{excluded_model} count: #{excluded_model.count}").to eq("#{excluded_model} count: #{initial_excluded_model_count}")
     end
+
+    Category.
+      joins(:translations).
+      where("category_translations.name like '% Category'").
+      each do |category|
+        expect(category.url).to end_with('-category')
+      end
   end
 end
