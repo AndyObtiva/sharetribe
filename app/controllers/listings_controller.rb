@@ -961,7 +961,7 @@ class ListingsController < ApplicationController
     }
 
     TransactionService::API::Api.processes.get(opts)
-      .maybe[:process]
+      .maybe.map {|h| [h].flatten.first }[:process]
       .or_else(nil)
       .tap { |process|
         raise ArgumentError.new("Cannot find transaction process: #{opts}") if process.nil?
