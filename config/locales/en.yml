@@ -1377,6 +1377,7 @@ en:
         detailed_description: "Detailed description"
         youtube_info: "If your description contains YouTube links, the videos will be shown below the description."
       destination:
+        location: Destination
         destination: Destination
       form_content:
         favor: "a service"
@@ -1429,7 +1430,7 @@ en:
         shipping_price_additional: "Additional items"
         pickup: Pickup
       origin:
-        location: Location
+        location: Origin
         origin: Origin
       send_button:
         save_listing: "Save listing"

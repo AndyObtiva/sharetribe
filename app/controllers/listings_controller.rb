@@ -262,6 +262,7 @@ class ListingsController < ApplicationController
     else
       @listing.build_origin_loc()
     end
+    @listing.build_destination_loc()
 
     form_content
   end
@@ -273,11 +274,17 @@ class ListingsController < ApplicationController
         @listing.build_origin_loc()
     end
 
+    unless @listing.destination_loc
+      @listing.build_destination_loc()
+    end
+
     form_content
   end
 
   def create
-    params[:listing].delete("origin_loc_attributes") if params[:listing][:origin_loc_attributes][:address].blank?
+    Listing::LOCATION_TYPES.each do |location_type|
+      params[:listing].delete("#{location_type}_loc_attributes") if params[:listing]["#{location_type}_loc_attributes".to_sym][:address].blank?
+    end
 
     shape = get_shape(Maybe(params)[:listing][:listing_shape_id].to_i.or_else(nil))
     listing_uuid = UUIDUtils.create
@@ -375,6 +382,9 @@ class ListingsController < ApplicationController
     unless @listing.origin_loc
         @listing.build_origin_loc()
     end
+    unless @listing.destination_loc
+        @listing.build_destination_loc()
+    end
 
     @custom_field_questions = @listing.category.custom_fields.where(community_id: @current_community.id)
     @numeric_field_ids = numeric_field_ids(@custom_field_questions)
@@ -412,10 +422,16 @@ class ListingsController < ApplicationController
   end
 
   def update
-    if (params[:listing][:origin] && (params[:listing][:origin_loc_attributes][:address].empty? || params[:listing][:origin].blank?))
-      params[:listing].delete("origin_loc_attributes")
-      if @listing.origin_loc
-        @listing.origin_loc.delete
+    Listing::LOCATION_TYPES.each do |location_type|
+      location_type_sym = location_type.to_sym
+      location_type_attributes = "#{location_type}_loc_attributes"
+      location_type_attributes_sym = location_type_attributes.to_sym
+      location_attribute = "#{location_type}_loc"
+      if (params[:listing][location_type_sym] && (params[:listing][location_type_attributes_sym][:address].empty? || params[:listing][location_type_sym].blank?))
+        params[:listing].delete(location_type_attributes)
+        if @listing.send(location_attribute)
+          @listing.send(location_attribute).delete
+        end
       end
     end
 
@@ -936,21 +952,28 @@ class ListingsController < ApplicationController
   end
 
   def add_location_params(listing_params, params)
-    if params[:origin_loc_attributes].nil?
-      listing_params
-    else
-      location_params = params[:origin_loc_attributes].permit(
+    Listing::LOCATION_TYPES.inject(listing_params) do |output_params, location_type|
+      location_type_sym = location_type.to_sym
+      location_type_attributes = "#{location_type}_loc_attributes"
+      location_type_attributes_sym = location_type_attributes.to_sym
+      location_attribute = "#{location_type}_loc"
+      location_attribute_sym = location_attribute.to_sym
+      if params[location_type_attributes_sym].nil?
+        output_params
+      else
+        location_params = params[location_type_attributes_sym].delete_if{|k,v| k=='location_type'}.permit(
         :address,
         :google_address,
         :latitude,
         :longitude
-      ).merge(
-        location_type: :origin_loc
-      )
+        ).merge(
+          location_type: location_attribute_sym
+        )
 
-      listing_params.merge(
-        origin_loc_attributes: location_params
-      )
+        output_params.merge(
+          location_type_attributes_sym => location_params
+        )
+      end
     end
   end
 

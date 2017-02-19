@@ -25,7 +25,7 @@ describe 'Seeds' do
     load Rails.root.join('db', 'seeds.rb').to_s
     load Rails.root.join('db', 'seeds.rb').to_s
   end
-  it 'adds 10 categories with translatios and 100 listings with 100 people and emails' do    
+  it 'adds 10 categories with translations and 100 listings with 100 people and emails' do
     expect(ListingShape::HABTM_Categories.count).to eq(initial_category_listing_shape_count + 10)
     expect(Category::HABTM_ListingShapes.count).to eq(initial_category_listing_shape_count + 10)
     expect(ListingShape.count).to eq(initial_listing_shape_count + 10)
