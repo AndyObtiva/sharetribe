@@ -264,12 +264,36 @@ FactoryGirl.define do
     build_association(:community)
   end
 
+  factory :seed_listing_shape, class: ListingShape do
+    community_id 1
+    price_enabled true
+    name_tr_key "64b3a239-159a-4b03-9810-688f46fa73dd"
+    action_button_tr_key "a8ceaf9f-2600-42ac-990e-f7dd94a6355a"
+    transaction_process_id 1
+    shipping_enabled false
+    name "offering"
+    sequence(:sort_priority) {|n| n}
+    availability 'none'
+    has_many :listing_units do |listing_shape|
+      FactoryGirl.build(:seed_listing_unit, :listing_shape => listing_shape)
+    end
+  end
+
+  factory :seed_listing_unit, class: ListingUnit do
+    unit_type 'day'
+    kind 'time'
+    name_tr_key nil
+    selector_tr_key nil
+    quantity_selector 'day'
+  end
+
   factory :seed_category, parent: :category do
     ignore do
       name nil
     end
     icon "item"
     community {Community.find_by(id: 1) || FactoryGirl.create(:community)}
+    sequence(:sort_priority) {|n| n}
     after(:create) do |category, evaluator|
       if evaluator.name
         translation_name = evaluator.name
@@ -284,6 +308,11 @@ FactoryGirl.define do
       end
       t = FactoryGirl.create(:category_translation, name: translation_name, category_id: category.id, locale: 'en')
       category.update_column(:url, category.uniq_url)
+
+      shapes = [FactoryGirl.create(:seed_listing_shape)]
+      shapes.each { |s|
+        CategoryListingShape.create!(category_id: category.id, listing_shape_id: s[:id])
+      }
     end
   end
 
