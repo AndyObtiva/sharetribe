@@ -133,6 +133,7 @@ FactoryGirl.define do
       }
     community_id 1
     listing_shape_id { category.listing_shapes.first.id }
+    action_button_tr_key "ship"
     after(:create) do |listing, evalutator|
       listing.origin_loc = FactoryGirl.create(:seed_location,
         listing: listing,
@@ -295,12 +296,12 @@ FactoryGirl.define do
   factory :seed_listing_shape, class: ListingShape do
     community_id 1
     price_enabled true
-    name_tr_key "64b3a239-159a-4b03-9810-688f46fa73dd"
-    action_button_tr_key "a8ceaf9f-2600-42ac-990e-f7dd94a6355a"
+    name_tr_key "shipping"
+    action_button_tr_key "offer_to_ship"
     transaction_process_id 1
     shipping_enabled false
-    name "offering"
     sequence(:sort_priority) {|n| n}
+    name 'shipping_seed'
     availability 'none'
     has_many :listing_units do |listing_shape|
       FactoryGirl.build(:seed_listing_unit, :listing_shape => listing_shape)
@@ -337,10 +338,8 @@ FactoryGirl.define do
       t = FactoryGirl.create(:category_translation, name: translation_name, category_id: category.id, locale: 'en')
       category.update_column(:url, category.uniq_url)
 
-      shapes = [FactoryGirl.create(:seed_listing_shape)]
-      shapes.each { |s|
-        CategoryListingShape.create!(category_id: category.id, listing_shape_id: s[:id])
-      }
+      shape = ListingShape.find_by(community_id: category.community.id, name: 'shipping_seed') || FactoryGirl.create(:seed_listing_shape, community_id: category.community.id)
+      CategoryListingShape.create!(category_id: category.id, listing_shape_id: shape.id)
     end
   end
 
