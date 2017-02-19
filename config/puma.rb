@@ -8,6 +8,8 @@ if ENV['RAILS_ENV'] == 'production'
   before_fork do
    ActiveRecord::Base.connection_pool.disconnect!
   end
+  threads 1,1
+  workers 1
 else
   threads 1,1
   workers 4
