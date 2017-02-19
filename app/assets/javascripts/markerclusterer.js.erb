@@ -756,7 +756,7 @@ MarkerClusterer.prototype.createClusters_ = function() {
   var bounds = this.getExtendedBounds(mapBounds);
 
   for (var i = 0, marker; marker = this.markers_[i]; i++) {
-    if (!marker.isAdded && this.isMarkerInBounds_(marker, bounds) && (showingMarker!=marker.getTitle())) {
+    if (!marker.isAdded && this.isMarkerInBounds_(marker, bounds) && (this.showingMarker_!=marker.getTitle())) {
       this.addToClosestCluster_(marker, i);
     }
   }
