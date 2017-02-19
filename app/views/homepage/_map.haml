@@ -6,7 +6,7 @@
     initialize_labels();
 
     $(document).ready(function() {
-      var locationGoogleMap = window.mainMap = new LocationGoogleMap();
+      var locationGoogleMap = new LocationGoogleMap();
       locationGoogleMap.initialize_listing_map(
         #{@listings.map { |l| {category: l[:category_id], id: l[:id], icon: l[:icon_name], latitude: l[:latitude], longitude: l[:longitude] } }.to_json},
         "#{community_location_lat}",

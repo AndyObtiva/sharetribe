@@ -32,7 +32,7 @@
       = form.label :street_address, t("settings.profile.street_address"), :class => "inline"
       %small
         = t('settings.profile.default_in_listing')
-    = form.text_field :street_address, :class => "text_field", :onkeyup => "timed_input(this)"
+    = form.text_field :street_address, :class => "text_field"
     %small
       = t("settings.profile.location_description")
     #settings_map_canvas.map
@@ -41,8 +41,11 @@
           source = document.getElementById("person_street_address");
           $(document).ready(function(){
             var locationGoogleMap = new LocationGoogleMap();
-            locationGoogleMap.googlemapMarkerInit("settings_map_canvas","person_location","person_street_address", true, #{tribe_latitude}, #{tribe_longitude});
+            locationGoogleMap.googlemapMarkerInit("settings_map_canvas","person_location","person_street_address", true, #{tribe_latitude || 'null'}, #{tribe_longitude || 'null'});
+            $(source).on('keyup', function(e) {
+              locationGoogleMap.timed_input(this);
             });
+          });
 
     -# Phone number
     .inline-label-container

@@ -109,7 +109,7 @@ LocationGoogleMap = function() {
       markerPosition = new google.maps.LatLng(latitude.value,longitude.value);
       self.init_map();
     } else {
-      if (textfieldElement.value) {
+      if (address) {
         self.timed_input(textfieldElement, 0, function(location) {
           markerPosition = location;
           self.init_map();
@@ -181,7 +181,8 @@ LocationGoogleMap = function() {
 
   self.update_map = function(field, on_geolocation) {
     if (geocoder) {
-      geocoder.geocode({'address':field.value.replace("&", "")},
+      map_address = (on_geolocation && address) || (field && field.value.replace("&", ""))
+      geocoder.geocode({'address':map_address},
         function(response,info) {
           if (info == google.maps.GeocoderStatus.OK){
             if (on_geolocation) {
@@ -193,8 +194,12 @@ LocationGoogleMap = function() {
             }
             self.update_model_location(response);
           } else {
-            marker && marker.setVisible(false);
-            self.nil_locations();
+            if (on_geolocation) {
+              on_geolocation(null)
+            } else {
+              marker && marker.setVisible(false);
+              self.nil_locations();
+            }
           }
         }
       );
@@ -234,7 +239,8 @@ LocationGoogleMap = function() {
         _element += "listing_destination";
       }
     }
-    $(form_id).validate().element(_element);
+    var validate_result = $(form_id).validate()
+    validate_result && validate_result.element(_element);
   }
 
   self.nil_locations = function(_prefix) {
@@ -521,7 +527,7 @@ LocationGoogleMap = function() {
     helsinki = new google.maps.LatLng(60.17, 24.94);
     flagMarker = new google.maps.Marker();
     var myOptions = {
-      zoom: 16,
+      zoom: 5,
       maxZoom: 17,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };

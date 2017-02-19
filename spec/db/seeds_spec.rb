@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Seeds' do
   let!(:initial_listing_count) {Listing.count}
+  let!(:initial_location_count) {Location.count}
   let!(:initial_person_count) {Person.count}
   let!(:initial_category_count) {Category.count}
   let!(:initial_category_translation_count) {CategoryTranslation.count}
@@ -11,7 +12,7 @@ describe 'Seeds' do
   let!(:initial_category_listing_shape_count) {ListingShape::HABTM_Categories.count}
   let!(:excluded_models) {
     Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each {|f| require(f.sub(/.rb/,'')) rescue nil}
-    excluded_models = ActiveRecord::Base.subclasses - [Category, CategoryTranslation, Listing, Person, Email, ListingShape, ListingUnit, ListingShape::HABTM_Categories, Category::HABTM_ListingShapes, CategoryListingShape]
+    excluded_models = ActiveRecord::Base.subclasses - [Category, CategoryTranslation, Listing, Location, Person, Email, ListingShape, ListingUnit, ListingShape::HABTM_Categories, Category::HABTM_ListingShapes, CategoryListingShape]
   }
   let!(:initial_excluded_model_counts) {
     excluded_models.inject({}) do |output, excluded_model|
@@ -25,7 +26,7 @@ describe 'Seeds' do
     load Rails.root.join('db', 'seeds.rb').to_s
     load Rails.root.join('db', 'seeds.rb').to_s
   end
-  it 'adds 10 categories with translations and 100 listings with 100 people and emails' do
+  it 'adds 10 categories and 100 listings with their associations' do
     expect(ListingShape::HABTM_Categories.count).to eq(initial_category_listing_shape_count + 10)
     expect(Category::HABTM_ListingShapes.count).to eq(initial_category_listing_shape_count + 10)
     expect(ListingShape.count).to eq(initial_listing_shape_count + 10)
@@ -33,6 +34,7 @@ describe 'Seeds' do
     expect(Category.count).to eq(initial_category_count + 10)
     expect(CategoryTranslation.count).to eq(initial_category_translation_count + 10)
     expect(Listing.count).to eq(initial_listing_count + 100)
+    expect(Location.count).to eq(initial_listing_count + 200) #origins and destinations
     expect(Person.count).to eq(initial_person_count + 100)
     expect(Email.count).to eq(initial_email_count + 100)
 

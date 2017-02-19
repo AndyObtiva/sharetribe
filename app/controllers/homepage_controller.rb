@@ -70,7 +70,7 @@ class HomepageController < ApplicationController
     search_result = find_listings(params, current_page, per_page, compact_filter_params, includes.to_set, location_in_use, keyword_in_use)
 
     if @view_type == 'map'
-      viewport = viewport_geometry(params[:boundingbox], params[:lc], @current_community.location)
+      viewport = viewport_geometry(params[:boundingbox], params[:lc], (@current_user.location.try(:latitude)) ? @current_user.location : @current_community.location)
     end
 
     if FeatureFlagHelper.feature_enabled?(:searchpage_v1)

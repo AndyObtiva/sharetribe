@@ -6,8 +6,9 @@
     $(document).ready(function() {
       var source = "#{@source}";
       var attributes_prefix = "#{@source}_loc_attributes";
+      var google_address = $('#' + attributes_prefix + '_google_address').val();
       var locationGoogleMap = new LocationGoogleMap();
-      locationGoogleMap.googlemapMarkerInit('listing_map_canvas_#{@source}',attributes_prefix,source,true, #{tribe_latitude}, #{tribe_longitude});
+      locationGoogleMap.googlemapMarkerInit('listing_map_canvas_#{@source}',attributes_prefix,source,true, #{tribe_latitude || 'null'}, #{tribe_longitude || 'null'}, google_address);
       $("##{@source}").on('keyup', function(event) {
         locationGoogleMap.timed_input(this);
         //locationGoogleMap.timed_input_on_route()

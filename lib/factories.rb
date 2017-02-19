@@ -127,8 +127,26 @@ FactoryGirl.define do
     title {"I can ship #{Faker::Commerce.product_name}"}
     association :author, factory: :seed_person
     price {Money.new(Faker::Number.number(2).to_i*100, "USD")}
-    category_id { Category.joins(:translations).where("category_translations.name like '% Category'").pluck(:id).sample }
+    category {
+      Category.joins(:translations).where("category_translations.name like '% Category'").sample ||
+        FactoryGirl.create(:seed_category)
+      }
     community_id 1
+    listing_shape_id { category.listing_shapes.first.id }
+    after(:create) do |listing, evalutator|
+      listing.origin_loc = FactoryGirl.create(:seed_location,
+        listing: listing,
+        person: listing.author,
+        community: listing.category.community,
+        location_type: 'origin_loc'
+      )
+      listing.destination_loc = FactoryGirl.create(:seed_location,
+        listing: listing,
+        person: listing.author,
+        community: listing.category.community,
+        location_type: 'destination_loc'
+      )
+    end
   end
 
   factory :transaction do
@@ -249,6 +267,16 @@ FactoryGirl.define do
     longitude 25.7475
     address "helsinki"
     google_address "Helsinki, Finland"
+  end
+
+  factory :seed_location, parent: :location do
+    association(:listing) {nil}
+    association(:person) {nil}
+    association(:community) {nil}
+    latitude {Faker::Number.between(4500, 5100) / 100.0}
+    longitude {Faker::Number.between(200, 3500) / 100.0}
+    google_address { Faker::Address.city }
+    address {"#{google_address} great city"}
   end
 
   factory :email do
