@@ -1,14 +1,21 @@
-#listing_map_canvas.jsmap
+- @source = source rescue 'listing_origin'
+.jsmap{:id => "listing_map_canvas_#{@source}"}
 
-- content_for :map_js do
+- content_for "map_js_#{@source}".to_sym do
   :javascript
     $(document).ready(function() {
-      var source = "listing_origin";
-      googlemapMarkerInit('listing_map_canvas',"listing_origin_loc_attributes","listing_origin",true, #{tribe_latitude}, #{tribe_longitude});
+      var source = "#{@source}";
+      var attributes_prefix = "#{@source}_loc_attributes";
+      var locationGoogleMap = new LocationGoogleMap();
+      locationGoogleMap.googlemapMarkerInit('listing_map_canvas_#{@source}',attributes_prefix,source,true, #{tribe_latitude}, #{tribe_longitude});
+      $("##{@source}").on('keyup', function(event) {
+        locationGoogleMap.timed_input(this);
+        //locationGoogleMap.timed_input_on_route()
+      });
     });
 
 - if run_js_immediately
-  = yield :map_js
+  = yield "map_js_#{@source}".to_sym
 - else
   - content_for :extra_javascript do
-    = yield :map_js
+    = yield "map_js_#{@source}".to_sym

@@ -63,6 +63,7 @@
 #
 
 class Listing < ActiveRecord::Base
+  LOCATION_TYPES=['origin', 'destination']
 
   include ApplicationHelper
   include ActionView::Helpers::TranslationHelper
