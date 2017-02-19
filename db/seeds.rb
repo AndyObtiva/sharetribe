@@ -1,4 +1,8 @@
 # Always clear sample seeds
+ListingUnit.joins(:listing_shape => {:categories => :translations}).where("category_translations.name like '% Category'").destroy_all
+# Category::HABTM_ListingShapes.joins(:listing_shape => {:categories => :translations}).where("category_translations.name like '% Category'").destroy_all
+ListingShape.joins(:categories => :translations).where("category_translations.name like '% Category'").destroy_all
+ListingShape::HABTM_Categories.joins(:category => :translations).where("category_translations.name like '% Category'").destroy_all
 Category.joins(:translations).where("category_translations.name like '% Category'").destroy_all
 CategoryTranslation.where("name like '% Category'").destroy_all
 Listing.where("title like '%I can ship%'").destroy_all

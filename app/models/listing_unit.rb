@@ -18,4 +18,5 @@
 #
 
 class ListingUnit < ActiveRecord::Base
+  belongs_to :listing_shape
 end
