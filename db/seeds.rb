@@ -7,6 +7,7 @@ Category.joins(:translations).where("category_translations.name like '% Category
 CategoryTranslation.where("name like '% Category'").destroy_all
 Listing.where("title like '%I can ship%'").destroy_all
 Person.where("phone_number like '%555'").destroy_all
+Location.where("address like '% great city'").destroy_all
 
 if ENV['SAMPLE_SEEDS'].to_s.downcase == 'true'
   require Rails.root.join('lib', 'factories.rb').to_s
