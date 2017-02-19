@@ -40,7 +40,8 @@
         :javascript
           source = document.getElementById("person_street_address");
           $(document).ready(function(){
-            googlemapMarkerInit("settings_map_canvas","person_location","person_street_address", true, #{tribe_latitude}, #{tribe_longitude});
+            var locationGoogleMap = new LocationGoogleMap();
+            locationGoogleMap.googlemapMarkerInit("settings_map_canvas","person_location","person_street_address", true, #{tribe_latitude}, #{tribe_longitude});
             });
 
     -# Phone number

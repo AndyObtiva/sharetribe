@@ -1,20 +1,28 @@
 LocationGoogleMap = function() {
   var self = this;
+  var canvas;
   var directionsDisplay;
   var directionsService;
   var marker;
   var geocoder;
   var map;
   var defaultCenter;
+  var draggable;
+  var address;
+  var visible;
   var infowindow;
   var center;
   var prefix;
   var textfield;
+  var textfieldElement;
   var timer;
   var currentDirections = null;
   var initialLocation;
   var helsinki;
   var browserSupportFlag =  new Boolean();
+  var latitude;
+  var longitude;
+  var value;
   var listing_category = ["all"];
   var listing_tags = [];
   var listing_search;
@@ -57,14 +65,14 @@ LocationGoogleMap = function() {
     }
   );
 
-  self.timed_input = function(param) {
+  self.timed_input = function(param, delay, on_geolocation) {
     clearTimeout(timer);
     self.invalid_locations();
     timer=setTimeout(
       function() {
-        self.update_map(param);
+        self.update_map(param, on_geolocation);
       },
-      1500
+      delay || 1500
     );
   }
 
@@ -79,17 +87,43 @@ LocationGoogleMap = function() {
     );
   }
 
-  self.googlemapMarkerInit = function(canvas,n_prefix,n_textfield,draggable,community_location_lat,community_location_lon,address) {
+  self.googlemapMarkerInit = function(n_canvas,n_prefix,n_textfield,draggable,n_community_location_lat,n_community_location_lon,n_address) {
+    canvas = n_canvas;
     prefix = n_prefix;
     textfield = n_textfield;
+    textfieldElement = $('#' + textfield)[0];
 
     if (draggable == undefined)
       draggable = false;
 
-    var latitude = document.getElementById(prefix+ "_latitude");
-    var longitude = document.getElementById(prefix+ "_longitude");
-    var visible = true;
+    community_location_lat = n_community_location_lat
+    community_location_lon = n_community_location_lon
+    address = n_address
+    latitude = document.getElementById(prefix+ "_latitude");
+    longitude = document.getElementById(prefix+ "_longitude");
+    visible = true;
 
+    geocoder = new google.maps.Geocoder();
+
+    if (latitude.value != ""){
+      markerPosition = new google.maps.LatLng(latitude.value,longitude.value);
+      self.init_map();
+    } else {
+      if (textfieldElement.value) {
+        self.timed_input(textfieldElement, 0, function(location) {
+          markerPosition = location;
+          self.init_map();
+        });
+      } else {
+        markerPosition = defaultCenter;
+        visible = false;
+        self.init_map();
+      }
+    }
+
+  }
+
+  self.init_map = function() {
     var myOptions = {
       'zoom': 12,
       'streetViewControl': false,
@@ -101,15 +135,11 @@ LocationGoogleMap = function() {
     if (latitude.value != "") {
       self.setMapCenter(latitude.value, longitude.value, true);
     } else {
-      self.setMapCenter(community_location_lat, community_location_lon, false);
-    }
-    geocoder = new google.maps.Geocoder();
-
-    if (latitude.value != ""){
-      markerPosition = new google.maps.LatLng(latitude.value,longitude.value);
-    } else {
-      markerPosition = defaultCenter;
-      visible = false;
+      if (markerPosition) {
+        map.setCenter(markerPosition);
+      } else {
+        self.setMapCenter(community_location_lat, community_location_lon, false);
+      }
     }
 
     marker = new google.maps.Marker({
@@ -149,17 +179,21 @@ LocationGoogleMap = function() {
       marker.setVisible(false);
   }
 
-  self.update_map = function(field) {
+  self.update_map = function(field, on_geolocation) {
     if (geocoder) {
       geocoder.geocode({'address':field.value.replace("&", "")},
         function(response,info) {
           if (info == google.maps.GeocoderStatus.OK){
-            marker.setVisible(true);
-            map.setCenter(response[0].geometry.location);
-            marker.setPosition(response[0].geometry.location);
+            if (on_geolocation) {
+              on_geolocation(response[0].geometry.location)
+            } else {
+              marker.setVisible(true);
+              map.setCenter(response[0].geometry.location);
+              marker.setPosition(response[0].geometry.location);
+            }
             self.update_model_location(response);
           } else {
-            marker.setVisible(false);
+            marker && marker.setVisible(false);
             self.nil_locations();
           }
         }
