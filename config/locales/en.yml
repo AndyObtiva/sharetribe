@@ -1,4 +1,7 @@
 en:
+  shipping: Shipping
+  offer_to_ship: Offer To Ship
+  ship: Ship
   admin:
     categories:
       edit:
