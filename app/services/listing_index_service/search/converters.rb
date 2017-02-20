@@ -67,7 +67,7 @@ module ListingIndexService::Search::Converters
       if includes.include?(:listing_images)
         {
           listing_images: Maybe(l.listing_images.first)
-            .select { |li| li.image_ready? } # Filter images that are not processed
+            .select { |li| li.image_ready? || li.image_remote? } # Filter images that are not processed
             .map { |li|
               [{
                 thumb: li.image.url(:thumb),

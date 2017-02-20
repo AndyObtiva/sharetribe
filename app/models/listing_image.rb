@@ -142,6 +142,10 @@ class ListingImage < ActiveRecord::Base
     image_downloaded && !image_processing
   end
 
+  def image_remote?
+    image_file_name.to_s.match(/^http\:s?\/\//)
+  end
+
   def self.crop_need(x, desired_x)
     x - desired_x
   end

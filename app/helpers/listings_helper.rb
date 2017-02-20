@@ -79,7 +79,10 @@ module ListingsHelper
   def with_image_frame(listing, &block)
     if self.has_images?(listing) then
       images = listing.listing_images
-      if !listing.listing_images.all? { |image| image.image_ready? } then
+      remote_images = images.select {|image| image.image_remote?}
+      if remote_images.present? then
+        block.call(:images_ok, remote_images)
+      elsif !listing.listing_images.all? { |image| image.image_ready? } then
         block.call(:images_processing, nil)
       else
         block.call(:images_ok, images)
