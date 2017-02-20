@@ -7,6 +7,7 @@ ListingShape.where("listing_shapes.name = 'shipping_seed'").destroy_all
 Category.joins(:translations).where("category_translations.name like '% Category'").destroy_all
 CategoryTranslation.where("name like '% Category'").destroy_all
 Listing.where("title like '%I can ship%'").destroy_all
+CommunityMembership.where(consent: 'seed_consent0.1').destroy_all
 Person.where("phone_number like '%555'").destroy_all
 Location.where("address like '% great city'").destroy_all
 

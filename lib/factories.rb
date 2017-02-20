@@ -109,12 +109,11 @@ FactoryGirl.define do
       FactoryGirl.build(:email, person: person, confirmed_at: Time.now)
     end
     after(:create) do |person, evaluator|
-      person.update(community_membership:
-        person.community_memberships.create!(
-          community_id: 1,
-          status: 'accepted',
-          can_post_listings: true
-        )
+      person.create_community_membership(
+        community_id: 1,
+        status: 'accepted',
+        can_post_listings: true,
+        consent: "seed_consent0.1"
       )
     end
   end

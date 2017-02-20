@@ -9,9 +9,14 @@ describe 'Seeds' do
   let!(:initial_category_count) {Category.count}
   let!(:initial_category_translation_count) {CategoryTranslation.count}
   let!(:initial_email_count) {Email.count}
+  let!(:initial_community_membership_count) {CommunityMembership.count}
   let!(:excluded_models) {
     Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each {|f| require(f.sub(/.rb/,'')) rescue nil}
-    excluded_models = ActiveRecord::Base.subclasses - [Category, CategoryTranslation, Listing, Location, Person, Email, ListingShape, ListingShape::HABTM_Categories, Category::HABTM_ListingShapes, CategoryListingShape]
+    excluded_models = ActiveRecord::Base.subclasses - [
+      Category, CategoryTranslation, Listing, Location, Person, Email,
+      ListingShape, ListingShape::HABTM_Categories, Category::HABTM_ListingShapes,
+      CategoryListingShape, CommunityMembership
+    ]
   }
   let!(:initial_excluded_model_counts) {
     excluded_models.inject({}) do |output, excluded_model|
@@ -34,6 +39,7 @@ describe 'Seeds' do
     expect(Listing.count).to eq(initial_listing_count + 100)
     expect(Location.count).to eq(initial_listing_count + 200) #origins and destinations
     expect(Person.count).to eq(initial_person_count + 100)
+    expect(CommunityMembership.count).to eq(initial_person_count + 100)
     expect(Email.count).to eq(initial_email_count + 100)
 
     initial_excluded_model_counts.each do |excluded_model, initial_excluded_model_count|
