@@ -1,4 +1,4 @@
-SEED_COUNT = ENV['SEED_COUNT'] || 50
+ENV['SEED_COUNT'] ||= '50'
 # Always clear sample seeds
 ListingUnit.joins(:listing_shape).where("listing_shapes.name = 'shipping_seed'").destroy_all
 # Category::HABTM_ListingShapes.joins(:listing_shape => {:categories => :translations}).where("category_translations.name like '% Category'").destroy_all
@@ -15,5 +15,5 @@ if ENV['SAMPLE_SEEDS'].to_s.downcase == 'true'
   require Rails.root.join('lib', 'factories.rb').to_s
 
   10.times { FactoryGirl.create(:seed_category) }
-  SEED_COUNT.times { FactoryGirl.create(:seed_listing) }
+  ENV['SEED_COUNT'].to_i.times { FactoryGirl.create(:seed_listing) }
 end
