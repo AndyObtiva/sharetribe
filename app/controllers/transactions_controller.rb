@@ -6,6 +6,7 @@ class TransactionsController < ApplicationController
 
   before_filter only: [:new] do |controller|
     fetch_data(params[:listing_id]).on_success do |listing_id, listing_model, _, process|
+      process = [process].flatten.first
       Analytics.record_event(
         flash,
         "BuyButtonClicked",
@@ -41,7 +42,7 @@ class TransactionsController < ApplicationController
       }
     ).on_success { |((listing_id, listing_model, author_model, process, gateway))|
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
-
+      process = [process].flatten.first
       case [process[:process], gateway]
       when matches([:none])
         render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
@@ -83,7 +84,7 @@ class TransactionsController < ApplicationController
                                       is_booking: is_booking,
                                       unit: listing_model.unit_type&.to_sym)
 
-
+        process = [process].flatten.first
         transaction_service.create(
           {
             transaction: {
@@ -108,6 +109,7 @@ class TransactionsController < ApplicationController
           })
       }
     ).on_success { |(_, (_, _, _, process), _, _, tx)|
+      process = [process].flatten.first
       after_create_actions!(process: process, transaction: tx[:transaction], community_id: @current_community.id)
       flash[:notice] = after_create_flash(process: process) # add more params here when needed
       redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
@@ -401,6 +403,7 @@ class TransactionsController < ApplicationController
   end
 
   def validate_form(form_params, process)
+    process = [process].flatten.first
     if process[:process] == :none && form_params[:message].blank?
       Result::Error.new("Message cannot be empty")
     else
