@@ -5,7 +5,7 @@ module TransactionService::API
 
     def get(community_id:, process_id: nil)
       if process_id.nil?
-        Result::Success.new(TxProcessStore.get_all(community_id: community_id).first) #returns maybe object
+        Result::Success.new(TxProcessStore.get_all(community_id: community_id)) #returns maybe object
       else
         Maybe(TxProcessStore.get(community_id: community_id, process_id: process_id))
           .map { |res| Result::Success.new(res) }
