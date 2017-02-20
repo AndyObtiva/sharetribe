@@ -177,7 +177,7 @@ module Kassi
       paperclip_options.merge!({
         :path => "images/:class/:attachment/:id/:style/:filename",
         :url => ":s3_domain_url",
-        :storage => :s3,
+        :storage => (ENV['SAMPLE_SEEDS'].to_s.downcase == 'true' ? :filesystem : :s3),
         :s3_region => APP_CONFIG.s3_region,
         :s3_protocol => 'https',
         :s3_host_name => s3_host_name,

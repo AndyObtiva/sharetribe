@@ -1,21 +1,22 @@
 require 'spec_helper'
 
 describe 'Seeds' do
+  let!(:initial_community_membership_count) {CommunityMembership.count}
   let!(:initial_listing_shape_count) {ListingShape.count}
   let!(:initial_category_listing_shape_count) {ListingShape::HABTM_Categories.count}
   let!(:initial_listing_count) {Listing.count}
+  let!(:initial_listing_image_count) {ListingImage.count}
   let!(:initial_location_count) {Location.count}
   let!(:initial_person_count) {Person.count}
   let!(:initial_category_count) {Category.count}
   let!(:initial_category_translation_count) {CategoryTranslation.count}
   let!(:initial_email_count) {Email.count}
-  let!(:initial_community_membership_count) {CommunityMembership.count}
   let!(:excluded_models) {
     Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each {|f| require(f.sub(/.rb/,'')) rescue nil}
     excluded_models = ActiveRecord::Base.subclasses - [
       Category, CategoryTranslation, Listing, Location, Person, Email,
       ListingShape, ListingShape::HABTM_Categories, Category::HABTM_ListingShapes,
-      CategoryListingShape, CommunityMembership
+      CategoryListingShape, CommunityMembership, ListingImage
     ]
   }
   let!(:initial_excluded_model_counts) {
@@ -37,6 +38,7 @@ describe 'Seeds' do
     expect(Category.count).to eq(initial_category_count + 10)
     expect(CategoryTranslation.count).to eq(initial_category_translation_count + 10)
     expect(Listing.count).to eq(initial_listing_count + 100)
+    expect(ListingImage.count).to eq(initial_listing_image_count + 100)
     expect(Location.count).to eq(initial_listing_count + 200) #origins and destinations
     expect(Person.count).to eq(initial_person_count + 100)
     expect(CommunityMembership.count).to eq(initial_person_count + 100)

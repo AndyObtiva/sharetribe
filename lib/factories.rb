@@ -105,6 +105,9 @@ FactoryGirl.define do
     given_name {Faker::Name.first_name}
     family_name {Faker::Name.last_name}
     phone_number {Faker::PhoneNumber.phone_number.sub(/\d{3}$/, '555')}
+    image_file_name {Faker::LoremPixel.image('108x108', false, 'people', Faker::Number.between(1, 10))}
+    image_updated_at {DateTime.current}
+    image_content_type "image/jpeg"
     has_many :emails do |person|
       FactoryGirl.build(:email, person: person, confirmed_at: Time.now)
     end
@@ -137,6 +140,7 @@ FactoryGirl.define do
   factory :seed_listing, parent: :listing do
     title {"I can ship #{Faker::Commerce.product_name}"}
     association :author, factory: :seed_person
+    description {Faker::Lorem.paragraph(4)}
     price {Money.new(Faker::Number.number(2).to_i*100, "USD")}
     category {
       Category.joins(:translations).where("category_translations.name like '% Category'").sample ||
@@ -158,7 +162,14 @@ FactoryGirl.define do
         community: listing.category.community,
         location_type: 'destination_loc'
       )
+      listing.listing_images << FactoryGirl.create(:seed_listing_image, listing_id: listing.id)
     end
+  end
+
+  factory :seed_listing_image, class: ListingImage do
+    image_file_name {Faker::LoremPixel.image('644x430', false, 'transport', Faker::Number.between(1, 10))}
+    image_updated_at {DateTime.current}
+    image_content_type "image/jpeg"
   end
 
   factory :transaction do
