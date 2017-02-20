@@ -31,18 +31,18 @@ describe 'Seeds' do
     load Rails.root.join('db', 'seeds.rb').to_s
     load Rails.root.join('db', 'seeds.rb').to_s
   end
-  it 'adds 10 categories and 100 listings with their associations' do
+  it 'adds 10 categories and SEED_COUNT listings with their associations' do
     # expect(ListingShape::HABTM_Categories.count).to eq(initial_category_listing_shape_count + 10)
     # expect(Category::HABTM_ListingShapes.count).to eq(initial_category_listing_shape_count + 10)
     expect(ListingShape.count).to eq(initial_listing_shape_count + 1)
     expect(Category.count).to eq(initial_category_count + 10)
     expect(CategoryTranslation.count).to eq(initial_category_translation_count + 10)
-    expect(Listing.count).to eq(initial_listing_count + 100)
-    expect(ListingImage.count).to eq(initial_listing_image_count + 100)
+    expect(Listing.count).to eq(initial_listing_count + SEED_COUNT)
+    expect(ListingImage.count).to eq(initial_listing_image_count + SEED_COUNT)
     expect(Location.count).to eq(initial_listing_count + 200) #origins and destinations
-    expect(Person.count).to eq(initial_person_count + 100)
-    expect(CommunityMembership.count).to eq(initial_person_count + 100)
-    expect(Email.count).to eq(initial_email_count + 100)
+    expect(Person.count).to eq(initial_person_count + SEED_COUNT)
+    expect(CommunityMembership.count).to eq(initial_person_count + SEED_COUNT)
+    expect(Email.count).to eq(initial_email_count + SEED_COUNT)
 
     initial_excluded_model_counts.each do |excluded_model, initial_excluded_model_count|
       expect("#{excluded_model} count: #{excluded_model.count}").to eq("#{excluded_model} count: #{initial_excluded_model_count}")
