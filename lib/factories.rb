@@ -105,6 +105,18 @@ FactoryGirl.define do
     given_name {Faker::Name.first_name}
     family_name {Faker::Name.last_name}
     phone_number {Faker::PhoneNumber.phone_number.sub(/\d{3}$/, '555')}
+    has_many :emails do |person|
+      FactoryGirl.build(:email, person: person, confirmed_at: Time.now)
+    end
+    after(:create) do |person, evaluator|
+      person.update(community_membership:
+        person.community_memberships.create!(
+          community_id: 1,
+          status: 'accepted',
+          can_post_listings: true
+        )
+      )
+    end
   end
 
   factory :listing do
@@ -303,9 +315,6 @@ FactoryGirl.define do
     sequence(:sort_priority) {|n| n}
     name 'shipping_seed'
     availability 'none'
-    has_many :listing_units do |listing_shape|
-      FactoryGirl.build(:seed_listing_unit, :listing_shape => listing_shape)
-    end
   end
 
   factory :seed_listing_unit, class: ListingUnit do
