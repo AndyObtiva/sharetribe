@@ -146,7 +146,7 @@ FactoryGirl.define do
       Category.joins(:translations).where("category_translations.name like '% Category'").sample ||
         FactoryGirl.create(:seed_category)
       }
-    listing_shape_id {category.listing_shapes.id}
+    listing_shape_id {category.try(:listing_shapes).try(:first).try(:id)}
     community_id 1
     listing_shape { category.listing_shapes.first }
     action_button_tr_key "ship"
@@ -246,7 +246,6 @@ FactoryGirl.define do
     ident
     slogan "Test slogan"
     description "Test description"
-    currency "EUR"
 
     has_many(:community_customizations) do |community|
       FactoryGirl.build(:community_customization, community: community)
