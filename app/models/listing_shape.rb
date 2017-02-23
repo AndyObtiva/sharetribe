@@ -27,4 +27,5 @@ class ListingShape < ActiveRecord::Base
 
   has_and_belongs_to_many :categories, -> { order("sort_priority") }, join_table: "category_listing_shapes"
   has_many :listing_units
+  belongs_to :transaction_process
 end

@@ -68,8 +68,6 @@ class Transaction < ActiveRecord::Base
 
   validates_presence_of :payment_gateway
 
-  after_save :ensure_listing_has_transaction_process_id
-
   monetize :minimum_commission_cents, with_model_currency: :minimum_commission_currency
   monetize :unit_price_cents, with_model_currency: :unit_price_currency
   monetize :shipping_price_cents, allow_nil: true, with_model_currency: :unit_price_currency
@@ -198,11 +196,6 @@ class Transaction < ActiveRecord::Base
 
   def unit_type
     Maybe(read_attribute(:unit_type)).to_sym.or_else(nil)
-  end
-
-  def ensure_listing_has_transaction_process_id
-    listing.update_column(:transaction_process_id, id) unless listing.transaction_process_id == id
-    true
   end
 
 end
