@@ -197,6 +197,9 @@ GEM
       launchy (~> 2.1)
       mail (~> 2.2)
     erubis (2.7.0)
+    exception_notification (4.2.1)
+      actionmailer (>= 4.0, < 6)
+      activesupport (>= 4.0, < 6)
     excon (0.55.0)
     execjs (2.7.0)
     factory_girl (4.4.0)
@@ -585,6 +588,7 @@ DEPENDENCIES
   devise-encryptable (~> 0.2.0)
   dynamic_form (~> 1.1.4)
   email_spec (~> 1.6.0)
+  exception_notification
   factory_girl_rails (~> 4.4.1)
   faker (~> 1.7.3)
   faraday (~> 0.9.1)

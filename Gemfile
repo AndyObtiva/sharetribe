@@ -133,6 +133,7 @@ gem "i18n-js",
 gem "request_store", "~> 1.3"
 gem "asset_sync"
 gem "fog-aws"
+gem 'exception_notification'
 
 group :staging, :production do
   gem 'newrelic_rpm', '~> 3.9.1.236'
