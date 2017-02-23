@@ -129,12 +129,10 @@ FactoryGirl.define do
     valid_until 3.months.from_now
     times_viewed 0
     privacy "public"
-    listing_shape {ListingShape.first || FactoryGirl.create(:listing_shape)}
+    category {TestHelpers::find_or_build_category("item")}
+    listing_shape {category.listing_shapes.first || FactoryGirl.create(:listing_shape)}
     price Money.new(20, "USD")
     uuid
-    after(:build) do |l, evaluator|
-      l.category = TestHelpers::find_or_build_category("item") unless l.category || l.category_id
-    end
   end
 
   factory :seed_listing, parent: :listing do
@@ -252,6 +250,10 @@ FactoryGirl.define do
     end
 
     uuid
+
+    after(:build) do |community, evaluator|
+      community.currency = 'EUR' if community.attributes.key?('currency')
+    end
   end
 
   factory :community_customization do
@@ -326,14 +328,15 @@ FactoryGirl.define do
     price_enabled true
     name_tr_key "shipping"
     action_button_tr_key "offer_to_ship"
-    transaction_process {TransactionProcess.first || FactoryGirl.create(:transaction_process)}
+    transaction_process {FactoryGirl.create(:transaction_process)}
     shipping_enabled false
     sequence(:sort_priority) {|n| n}
-    name 'shipping_seed'
     availability 'none'
+    name 'shipping'
   end
 
   factory :seed_listing_shape, parent: :listing_shape do
+    name 'shipping_seed'
   end
 
   factory :seed_listing_unit, class: ListingUnit do

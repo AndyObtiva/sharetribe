@@ -15,6 +15,8 @@
 #
 
 class TransactionProcess < ActiveRecord::Base
+  has_one :listing_shape
+
   attr_accessible(
     :community_id,
     :process,
