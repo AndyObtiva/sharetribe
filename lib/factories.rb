@@ -130,7 +130,7 @@ FactoryGirl.define do
     times_viewed 0
     privacy "public"
     category {TestHelpers::find_or_build_category("item")}
-    listing_shape {category.listing_shapes.first || FactoryGirl.create(:listing_shape)}
+    listing_shape {category.listing_shapes.first}
     price Money.new(20, "USD")
     uuid
   end
@@ -144,7 +144,6 @@ FactoryGirl.define do
       Category.joins(:translations).where("category_translations.name like '% Category'").sample ||
         FactoryGirl.create(:seed_category)
       }
-    listing_shape_id {category.try(:listing_shapes).try(:first).try(:id)}
     community_id 1
     listing_shape { category.listing_shapes.first }
     action_button_tr_key "ship"
@@ -242,8 +241,8 @@ FactoryGirl.define do
 
   factory :community do
     ident
-    slogan "Test slogan"
-    description "Test description"
+    slogan "SHIP WITH A TRAVELLER"
+    description "Tired of big expensive shipping fees? Ship with a traveller instead. Find one. Connect. Ship. As easy as 1 2 3!"
 
     has_many(:community_customizations) do |community|
       FactoryGirl.build(:community_customization, community: community)
@@ -252,6 +251,7 @@ FactoryGirl.define do
     uuid
 
     after(:build) do |community, evaluator|
+      community.available_currencies = ['EUR'] if community.attributes.key?('available_currencies')
       community.currency = 'EUR' if community.attributes.key?('currency')
     end
   end
@@ -260,8 +260,8 @@ FactoryGirl.define do
     build_association(:community)
     name "Sharetribe"
     locale "en"
-    slogan "Test slogan"
-    description "Test description"
+    slogan "SHIP WITH A TRAVELLER"
+    description "Tired of big expensive shipping fees? Ship with a traveller instead. Find one. Connect. Ship. As easy as 1 2 3!"
   end
 
   factory :community_membership do

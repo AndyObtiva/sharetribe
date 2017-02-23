@@ -164,7 +164,7 @@ describe Listing, type: :model do
 
   context 'after save' do
     it 'ensures listing gets transaction id' do
-      listing = FactoryGirl.create(:listing)
+      listing = FactoryGirl.create(:seed_listing)
       expect(listing.transaction_process_id).to eq(listing.listing_shape.transaction_process_id)
       # ensures happens again on listing change
       transaction_process2 = FactoryGirl.create(:transaction_process)
