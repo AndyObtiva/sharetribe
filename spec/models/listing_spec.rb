@@ -161,4 +161,17 @@ describe Listing, type: :model do
     end
 
   end
+
+  context 'after save' do
+    it 'ensures listing gets transaction id' do
+      listing = FactoryGirl.create(:listing)
+      expect(listing.transaction_process_id).to eq(listing.listing_shape.transaction_process_id)
+      # ensures happens again on listing change
+      transaction_process2 = FactoryGirl.create(:transaction_process)
+      listing_shape2 = FactoryGirl.create(:listing_shape, transaction_process_id: transaction_process2.id)
+      listing.update(listing_shape: listing_shape2)
+      expect(listing.transaction_process_id).to eq(transaction_process2.id)
+    end
+  end
+
 end

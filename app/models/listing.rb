@@ -79,6 +79,7 @@ class Listing < ActiveRecord::Base
   has_many :custom_dropdown_field_values, :class_name => "DropdownFieldValue"
   has_many :custom_checkbox_field_values, :class_name => "CheckboxFieldValue"
 
+  belongs_to :listing_shape
   has_one :location, :dependent => :destroy
   has_one :origin_loc, -> { where('location_type = ?', 'origin_loc') }, :class_name => "Location", :dependent => :destroy
   has_one :destination_loc, -> { where('location_type = ?', 'destination_loc') }, :class_name => "Location", :dependent => :destroy
@@ -98,6 +99,8 @@ class Listing < ActiveRecord::Base
   validates_length_of :title, :in => 2..60, :allow_nil => false
 
   before_create :set_sort_date_to_now
+  before_save :ensure_transaction_process_id
+
   def set_sort_date_to_now
     self.sort_date ||= Time.now
   end
@@ -229,6 +232,11 @@ class Listing < ActiveRecord::Base
 
   def unit_type
     Maybe(read_attribute(:unit_type)).to_sym.or_else(nil)
+  end
+
+  def ensure_transaction_process_id
+    self.transaction_process_id = listing_shape.transaction_process_id if listing_shape && listing_shape.transaction_process_id != self.transaction_process_id
+    true
   end
 
 end

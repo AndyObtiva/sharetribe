@@ -129,7 +129,7 @@ FactoryGirl.define do
     valid_until 3.months.from_now
     times_viewed 0
     privacy "public"
-    listing_shape_id 123
+    listing_shape {ListingShape.first || FactoryGirl.create(:listing_shape)}
     price Money.new(20, "USD")
     uuid
     after(:build) do |l, evaluator|
@@ -146,8 +146,9 @@ FactoryGirl.define do
       Category.joins(:translations).where("category_translations.name like '% Category'").sample ||
         FactoryGirl.create(:seed_category)
       }
+    listing_shape_id {category.listing_shapes.id}
     community_id 1
-    listing_shape_id { category.listing_shapes.first.id }
+    listing_shape { category.listing_shapes.first }
     action_button_tr_key "ship"
     after(:create) do |listing, evalutator|
       listing.origin_loc = FactoryGirl.create(:seed_location,
@@ -315,16 +316,25 @@ FactoryGirl.define do
     build_association(:community)
   end
 
-  factory :seed_listing_shape, class: ListingShape do
+  factory :transaction_process, class: TransactionProcess do
+    community_id 1
+    author_is_seller false
+    process 'none'
+  end
+
+  factory :listing_shape, class: ListingShape do
     community_id 1
     price_enabled true
     name_tr_key "shipping"
     action_button_tr_key "offer_to_ship"
-    transaction_process_id 1
+    transaction_process {TransactionProcess.first || FactoryGirl.create(:transaction_process)}
     shipping_enabled false
     sequence(:sort_priority) {|n| n}
     name 'shipping_seed'
     availability 'none'
+  end
+
+  factory :seed_listing_shape, parent: :listing_shape do
   end
 
   factory :seed_listing_unit, class: ListingUnit do
