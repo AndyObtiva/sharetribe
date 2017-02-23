@@ -2,6 +2,7 @@ ENV['SEED_COUNT'] ||= '50'
 # Always clear sample seeds
 ListingUnit.joins(:listing_shape).where("listing_shapes.name = 'shipping_seed'").destroy_all
 # Category::HABTM_ListingShapes.joins(:listing_shape => {:categories => :translations}).where("category_translations.name like '% Category'").destroy_all
+TransactionProcess.joins(:listing_shape).where("listing_shapes.name = 'shipping_seed'").destroy_all
 ListingShape.where("listing_shapes.name = 'shipping_seed'").destroy_all
 # ListingShape::HABTM_Categories.joins(:category => :translations).where("category_translations.name like '% Category'").destroy_all
 Category.joins(:translations).where("category_translations.name like '% Category'").destroy_all

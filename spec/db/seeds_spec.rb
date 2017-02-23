@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Seeds' do
   let!(:initial_community_membership_count) {CommunityMembership.count}
+  let!(:initial_transaction_process_count) {TransactionProcess.count}
   let!(:initial_listing_shape_count) {ListingShape.count}
   let!(:initial_category_listing_shape_count) {ListingShape::HABTM_Categories.count}
   let!(:initial_listing_count) {Listing.count}
@@ -16,7 +17,7 @@ describe 'Seeds' do
     excluded_models = ActiveRecord::Base.subclasses - [
       Category, CategoryTranslation, Listing, Location, Person, Email,
       ListingShape, ListingShape::HABTM_Categories, Category::HABTM_ListingShapes,
-      CategoryListingShape, CommunityMembership, ListingImage
+      CategoryListingShape, CommunityMembership, ListingImage, TransactionProcess
     ]
   }
   let!(:initial_excluded_model_counts) {
@@ -36,6 +37,7 @@ describe 'Seeds' do
     # expect(ListingShape::HABTM_Categories.count).to eq(initial_category_listing_shape_count + 10)
     # expect(Category::HABTM_ListingShapes.count).to eq(initial_category_listing_shape_count + 10)
     expect(ListingShape.count).to eq(initial_listing_shape_count + 1)
+    expect(TransactionProcess.count).to eq(initial_transaction_process_count + 1)
     expect(Category.count).to eq(initial_category_count + 10)
     expect(CategoryTranslation.count).to eq(initial_category_translation_count + 10)
     expect(Listing.count).to eq(initial_listing_count + ENV['SEED_COUNT'].to_i)
