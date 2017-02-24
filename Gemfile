@@ -143,6 +143,7 @@ end
 
 group :development, :test do
   gem 'rubocop', '~> 0.37.2', require: false
+  gem 'puts_debuggerer' 
 end
 
 group :development, :staging do

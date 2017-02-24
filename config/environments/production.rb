@@ -115,6 +115,7 @@ Kassi::Application.configure do
 
   config.middleware.use ExceptionNotification::Rack,
     :email => {
+      :deliver_with => (ENV['EXCEPTION_NOTIFICATION_DELIVER_WITH'] || 'deliver_later').to_sym
       :email_prefix => ENV['EXCEPTION_NOTIFICATION_EMAIL_PREFIX'].to_s,
       :sender_address => ENV['EXCEPTION_NOTIFICATION_EXCEPTION_RECIPIENTS'].to_s,
       :exception_recipients => ENV['EXCEPTION_NOTIFICATION_SENDER_ADDRESS'].to_s.split(/[ ,]/).reject(&:empty?)

@@ -1,6 +1,7 @@
 en:
   shipping: Shipping
-  offer_to_ship: Offer To Ship
+  shipping_seed: Shipping
+  offer_to_ship: Discuss Shipping
   ship: Discuss Shipping
   admin:
     categories:

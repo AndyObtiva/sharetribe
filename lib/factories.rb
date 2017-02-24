@@ -70,7 +70,9 @@ FactoryGirl.define do
   end
 
   sequence :ident do |n|
-    "sharetribe-testcommunity-#{n}"
+    num = n
+    num += 1 while Community.exists?(ident: "sharetribe-testcommunity-#{num}")
+    "sharetribe-testcommunity-#{num}"
   end
 
   sequence :token do |n|
@@ -102,15 +104,16 @@ FactoryGirl.define do
   end
 
   factory :seed_person, parent: :person do
+    ignore do
+      email_address { generate(:email_address) }
+    end
     given_name {Faker::Name.first_name}
     family_name {Faker::Name.last_name}
     phone_number {Faker::PhoneNumber.phone_number.sub(/\d{3}$/, '555')}
     image_file_name {Faker::LoremPixel.image('108x108', false, 'people', Faker::Number.between(1, 10))}
     image_updated_at {DateTime.current}
     image_content_type "image/jpeg"
-    has_many :emails do |person|
-      FactoryGirl.build(:email, person: person, confirmed_at: Time.now)
-    end
+    emails []
     after(:create) do |person, evaluator|
       person.create_community_membership(
         community_id: 1,
@@ -118,6 +121,9 @@ FactoryGirl.define do
         can_post_listings: true,
         consent: "seed_consent0.1"
       )
+      person.update(username: person.emails.first.address.gsub(/[@.]/, '_'))
+      person.emails = []
+      FactoryGirl.create(:seed_email, person: person, confirmed_at: Time.now, address: evaluator.email_address)
     end
   end
 
@@ -240,19 +246,28 @@ FactoryGirl.define do
   end
 
   factory :community do
+    ignore do
+      community_customization_name "Sharetribe"
+      community_customization_locale "en"
+    end
     ident
-    slogan "SHIP WITH A TRAVELLER"
-    description "Tired of big expensive shipping fees? Ship with a traveller instead. Find one. Connect. Ship. As easy as 1 2 3!"
-
-    has_many(:community_customizations) do |community|
-      FactoryGirl.build(:community_customization, community: community)
+    slogan "Test slogan"
+    description "Test description"
+    has_many(:community_customizations) do |community, evaluator|
+      FactoryGirl.build(:community_customization,
+        community: community,
+        name: evaluator.community_customization_name,
+        locale: evaluator.community_customization_locale,
+        slogan: evaluator.slogan,
+        description: evaluator.description
+      )
     end
 
     uuid
 
     after(:build) do |community, evaluator|
-      community.available_currencies = ['EUR'] if community.attributes.key?('available_currencies')
-      community.currency = 'EUR' if community.attributes.key?('currency')
+      community.available_currencies = 'USD' if community.attributes.key?('available_currencies')
+      community.currency = 'USD' if community.attributes.key?('currency')
     end
   end
 
@@ -260,8 +275,8 @@ FactoryGirl.define do
     build_association(:community)
     name "Sharetribe"
     locale "en"
-    slogan "SHIP WITH A TRAVELLER"
-    description "Tired of big expensive shipping fees? Ship with a traveller instead. Find one. Connect. Ship. As easy as 1 2 3!"
+    slogan "Test slogan"
+    description "Test description"
   end
 
   factory :community_membership do
@@ -278,6 +293,11 @@ FactoryGirl.define do
     distance_unit "metric"
     limit_search_distance 0
     limit_priority_links nil
+  end
+
+  factory :seed_marketplace_configurations, parent: :marketplace_configurations do
+    main_search "location, destination, item type, trip kind"
+    limit_priority_links 5
   end
 
   factory :invitation do
@@ -310,6 +330,9 @@ FactoryGirl.define do
     address { generate(:email_address) }
     confirmed_at Time.now
     send_notifications true
+  end
+
+  factory :seed_email, parent: :email do
   end
 
   factory :category do

@@ -18,7 +18,8 @@ describe 'Seeds' do
       excluded_models = ActiveRecord::Base.subclasses - [
         Category, CategoryTranslation, Listing, Location, Person, Email,
         ListingShape, ListingShape::HABTM_Categories, Category::HABTM_ListingShapes,
-        CategoryListingShape, CommunityMembership, ListingImage, TransactionProcess
+        CategoryListingShape, CommunityMembership, ListingImage, TransactionProcess,
+        MarketplaceConfigurations
       ]
     }
     let!(:initial_excluded_model_counts) {
@@ -44,9 +45,9 @@ describe 'Seeds' do
       expect(Listing.count).to eq(initial_listing_count + ENV['SEED_COUNT'].to_i)
       expect(ListingImage.count).to eq(initial_listing_image_count + ENV['SEED_COUNT'].to_i)
       expect(Location.count).to eq(initial_listing_count + 2*ENV['SEED_COUNT'].to_i) #origins and destinations
-      expect(Person.count).to eq(initial_person_count + ENV['SEED_COUNT'].to_i)
+      expect(Person.count).to eq(initial_person_count + ENV['SEED_COUNT'].to_i + 1) # +1 for admin
+      expect(Email.count).to eq(initial_email_count + ENV['SEED_COUNT'].to_i + 1) # +1 for admin
       expect(CommunityMembership.count).to eq(initial_person_count + ENV['SEED_COUNT'].to_i)
-      expect(Email.count).to eq(initial_email_count + ENV['SEED_COUNT'].to_i)
 
       initial_excluded_model_counts.each do |excluded_model, initial_excluded_model_count|
         expect("#{excluded_model} count: #{excluded_model.count}").to eq("#{excluded_model} count: #{initial_excluded_model_count}")
