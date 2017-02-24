@@ -19,4 +19,4 @@ class ListingImageS3OptionsJSAdapter < JSAdapter
     HashUtils.camelize_keys(HashUtils.object_to_hash(self), false)
   end
 end
-ListingImageS3OptionsJSAdapter = ListingImageS3OptionsJsAdapter
+ListingImageS3OptionsJsAdapter = ListingImageS3OptionsJSAdapter
