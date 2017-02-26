@@ -10,7 +10,8 @@ module CustomLandingPage
     end
 
     def load_structure(*)
-      JSON.parse(CustomLandingPage::ExampleData::DATA_STR)
+      structure_name = APP_CONFIG.structure_name || 'DATA_STR'
+      JSON.parse(CustomLandingPage::ExampleData.const_get(structure_name))
     end
 
     def enabled?(cid)

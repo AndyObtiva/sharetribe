@@ -294,6 +294,73 @@ module CustomLandingPage
 }
 JSON
 
+    COMING_SOON_STR = <<JSON
+{
+  "settings": {
+    "marketplace_id": 9999,
+    "locale": "en",
+    "sitename": "example"
+  },
+
+  "page": {
+    "twitter_handle": {"type": "marketplace_data", "id": "twitter_handle"},
+    "twitter_image": {"type": "assets", "id": "default_hero_background"},
+    "facebook_image": {"type": "assets", "id": "default_hero_background"},
+    "title": {"type": "marketplace_data", "id": "page_title"},
+    "description": {"type": "marketplace_data", "id": "description"},
+    "publisher": {"type": "marketplace_data", "id": "name"},
+    "copyright": {"type": "marketplace_data", "id": "name"},
+    "facebook_site_name": {"type": "marketplace_data", "id": "name"},
+    "google_site_verification": {"value": "CHANGEME"}
+  },
+
+  "sections": [
+
+    {
+      "id": "coming_soon",
+      "kind": "info",
+      "variation": "single_column",
+      "title": "Coming Soon...",
+      "paragraph": "Tired of big expensive shipping fees? Ship with a traveller instead. Find one. Connect. Ship. As easy as 1 2 3!",
+      "background_image": {"type": "assets", "id": "default_hero_background"}
+    },
+    {
+      "id": "footer",
+      "kind": "footer",
+      "theme": "dark",
+      "social_media_icon_color": {"type": "marketplace_data", "id": "primary_color"},
+      "social_media_icon_color_hover": {"type": "marketplace_data", "id": "primary_color_darken"},
+      "links": [
+        {"label": "About", "href": {"type": "path", "id": "about"}},
+        {"label": "Contact us", "href": {"type": "path", "id": "contact_us"}},
+        {"label": "How to use?", "href": {"type": "path", "id": "how_to_use"}},
+        {"label": "Terms", "href": {"type": "path", "id": "terms"}},
+        {"label": "Privary", "href": {"type": "path", "id": "privacy"}},
+        {"label": "Sharetribe", "href": {"value": "https://www.sharetribe.com"}}
+      ],
+      "social": [
+        {"service": "facebook", "url": "https://www.facebook.com/Sharetribe/"},
+        {"service": "twitter", "url": "https://twitter.com/sharetribe"},
+        {"service": "instagram", "url": "https://www.instagram.com/"},
+        {"service": "youtube", "url": "https://www.youtube.com/channel/UCtefWVq2uu4pHXaIsHlBFnw"},
+        {"service": "googleplus", "url": "https://plus.google.com/114869130265262677354/"},
+        {"service": "linkedin", "url": "https://www.linkedin.com/company/2626583"},
+        {"service": "pinterest", "url": "https://www.pinterest.com/"}
+      ],
+      "copyright": "Copyright Marketplace Ltd 2016"
+    }
+  ],
+
+  "composition": [
+    { "section": {"type": "sections", "id": "coming_soon"}}
+  ],
+
+  "assets": [
+    { "id": "default_hero_background", "src": "default_hero_background.jpg", "content_type": "image/jpeg" }
+  ]
+}
+JSON
+
     TEMPLATE_STR = <<JSON
 {
     "settings": {

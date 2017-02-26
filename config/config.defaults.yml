@@ -1,5 +1,7 @@
 default: &default_settings
 
+  structure_name: <%= ENV['SHARETRIBE_STRUCTURE_NAME'] || 'DATA_STR' %>
+
   # Fill here the domain where you will be running Sharetribe.
   # If you are running on localhost, you can write here "lvh.me:3000" (which redirects to localhost port 3000)
   # The community subdomains will be added to this top domain.
