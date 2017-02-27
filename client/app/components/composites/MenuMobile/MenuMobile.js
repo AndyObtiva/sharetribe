@@ -42,7 +42,7 @@ class MenuMobile extends Component {
     }
 
     const overlayColor = this.props.color ? this.props.color : 'black';
-    const openClass = this.state.isOpen ? css.canvasOpen : '';
+    const openClass = this.state.isOpen && !this.props.comingSoon ? css.canvasOpen : '';
     const extraClasses = this.props.extraClasses ? this.props.extraClasses : '';
     const notificationBadgeInArray = this.props.notificationCount > 0 ?
       [r(NotificationBadge, { className: css.notificationBadge }, this.props.notificationCount)] :

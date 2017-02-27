@@ -222,3 +222,7 @@
     display: block;
   }
 }
+
+.mobileMenuComingSoon {
+  display: none !important;
+}

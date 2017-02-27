@@ -236,9 +236,10 @@ class Topbar extends Component {
     const oldSearchParams = parseSearchParams(location);
     const searchPlaceholder = this.props.search ? this.props.search.search_placeholder : null;
     const textLogo = this.props.logo.image ? '' : css.textLogo;
+    const mobileMenuComingSoonClass = this.props.menu.comingSoon ? css.mobileMenuComingSoon : '';
 
     return div({ className: classNames('Topbar', css.topbar) }, [
-      hasMenuProps ? r(MenuMobile, { ...mobileMenuProps, className: css.topbarMobileMenu }) : null,
+      hasMenuProps ? r(MenuMobile, { ...mobileMenuProps, className: classNames(css.topbarMobileMenu, mobileMenuComingSoonClass) }) : null,
       r(Logo, { ...this.props.logo, className: classNames(css.topbarLogo, textLogo), color: marketplaceColor1 }),
       div({ className: css.topbarMediumSpacer }),
       this.props.search ?
@@ -263,8 +264,8 @@ class Topbar extends Component {
           },
         }) :
         div({ className: css.topbarMobileSearchPlaceholder }),
-      div({ className: css.topbarMenuSpacer }, hasMenuProps ?
-        r(MenuPriority, menuProps) :
+      div({ className: css.topbarMenuSpacer }, //hasMenuProps ?
+        //r(MenuPriority, menuProps) :
         null),
       hasMultipleLanguages ? r(Menu, {
         ...languageMenuProps,
@@ -277,12 +278,13 @@ class Topbar extends Component {
                                  loggedInUsername, isAdmin, this.props.unReadMessagesCount, this.props.routes),
           classSet: css.topbarAvatarDropdown,
         }) :
-        r(LoginLinks, {
+        this.props.displayLoginLinks ? r(LoginLinks, {
           loginUrl: loginRoute,
           signupUrl: signupRoute,
           customColor: marketplaceColor1,
           className: css.topbarLinks,
-        }),
+        }) :
+      null,
       this.props.newListingButton ?
         r(AddNewListingButton, {
           ...this.props.newListingButton,

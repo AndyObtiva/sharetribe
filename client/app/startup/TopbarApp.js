@@ -30,7 +30,6 @@ export default (props) => {
   }) : null;
 
   _.set(props, 'avatarDropdown.avatar.image', avatarImageRecord);
-
   const combinedProps = Object.assign({}, props, { routes });
   return r(Topbar, combinedProps);
 };

@@ -9,7 +9,7 @@
 
     var staticProps = <%= props.to_json.html_safe %>
     var staticMarketplaceContext = <%= marketplace_context.to_json.html_safe %>
-
+    var structureName = "<%= APP_CONFIG.structure_name %>"
     var fetchPromise = window.fetch('<%= props_endpoint %>', { credentials: 'same-origin' })
       .then(function (res) {
         if (res.status >= 200 && res.status < 300) {
@@ -24,7 +24,15 @@
         return res.json();
       })
       .then(function (resJson) {
-        props = Object.assign({}, staticProps, resJson.props);
+        var defaultProps = {
+          displayLoginLinks: true
+        }
+        props = Object.assign(defaultProps, staticProps, resJson.props);
+        if (structureName == 'COMING_SOON_STR') {
+          props['displayLoginLinks'] = null;
+          props['newListingButton'] = null;
+          props['menu']['comingSoon'] = true;
+        }
         renderTopBar(props);
       });
 
@@ -35,7 +43,7 @@
       })
     ])
     .catch(function(error) {
-      console.error(error);
+      console.log(error);
       renderTopBar(staticProps);
     });
   }());
