@@ -10,6 +10,7 @@
     var staticProps = <%= props.to_json.html_safe %>
     var staticMarketplaceContext = <%= marketplace_context.to_json.html_safe %>
     var structureName = "<%= APP_CONFIG.structure_name %>"
+    window.structureName = structureName
     var fetchPromise = window.fetch('<%= props_endpoint %>', { credentials: 'same-origin' })
       .then(function (res) {
         if (res.status >= 200 && res.status < 300) {
@@ -33,6 +34,7 @@
           props['newListingButton'] = null;
           props['menu']['comingSoon'] = true;
         }
+        window.topbarProps = props
         renderTopBar(props);
       });
 
