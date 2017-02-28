@@ -6,14 +6,14 @@ default: &default_settings
   # If you are running on localhost, you can write here "lvh.me:3000" (which redirects to localhost port 3000)
   # The community subdomains will be added to this top domain.
   # NOTE: Do not include http(s) here, or subdomains, just the top level domain, like "sharetribe.com" for example
-  domain: "anapog.herokuapp.com"
+  domain: <%= ENV['SHARETRIBE_DOMAIN'] %>
 
   # If you want to make logins work across different subdomains you should put here the domain where you are running Sharetribe.
   # practically in most cases the same value as in "domain:"
   # The session cookies will apply for the whole domain. If this is not needed you can leave this empty.
   # If you use domain aliases e.g. sharetribe.eu & sharetribe.cl, leave this empty.
   # NOTE: Do not include http(s) here, or subdomains, just the top level domain, like "sharetribe.com" for example
-  session_domain: "anapog.herokuapp.com"
+  session_domain: <%= ENV['SHARETRIBE_SESSION_DOMAIN'] %>
 
   # Redirect to this URL if community can not be found. For example, if user is trying to access community
   # http://nonexisting.sharetribe.com and there's no community named "nonexisting", then the user is redirected
@@ -21,13 +21,13 @@ default: &default_settings
   #
   # Example value: http://mydomain.com
   #
-  community_not_found_redirect: "anapog.herokuapp.com"
+  community_not_found_redirect: <%= ENV['SHARETRIBE_COMMUNITY_NOT_FOUND_REDIRECT'] %>
 
   # Login url. This can be a separate address for loggin in. For example
   # a subdomain with https. It's recommended to use https here, so passwords
   # are submited in encrypted form. e.g. "https://login.sharetribe.com"
   # If this is empty, will use the same domain for login
-  login_domain:
+  login_domain: <%= ENV['SHARETRIBE_LOGIN_DOMAIN'] %>
 
   # You can use Amazong S3 to store listing and profile images
   # If you leave following empty, the images will be stored in local file system
