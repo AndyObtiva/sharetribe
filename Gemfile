@@ -130,8 +130,6 @@ gem "i18n-js",
 
 # A store scoped to the request object for caching
 gem "request_store", "~> 1.3"
-gem "asset_sync"
-gem "fog-aws"
 gem 'exception_notification'
 
 group :staging, :production do
@@ -147,7 +145,7 @@ end
 
 group :development, :test do
   gem 'rubocop', '~> 0.37.2', require: false
-  gem 'puts_debuggerer' 
+  gem 'puts_debuggerer'
 end
 
 group :development, :staging do
