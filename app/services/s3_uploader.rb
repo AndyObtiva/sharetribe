@@ -20,7 +20,8 @@ class S3Uploader
   end
 
   def url
-    "https://#{@bucket}.s3.amazonaws.com/"
+    # "https://#{@bucket}.s3.amazonaws.com/"
+    "https://s3.amazonaws.com/#{@bucket}/"
   end
 
   private
