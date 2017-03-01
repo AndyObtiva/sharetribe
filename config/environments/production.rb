@@ -123,5 +123,4 @@ Kassi::Application.configure do
       :exception_recipients => ENV['EXCEPTION_NOTIFICATION_SENDER_ADDRESS'].to_s.split(/[ ,]/).reject(&:empty?)
     }
 
-  config.force_ssl = true
 end
