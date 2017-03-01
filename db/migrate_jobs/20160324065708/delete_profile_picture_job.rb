@@ -4,7 +4,7 @@ class DeleteProfilePictureJob < Struct.new(:person_id, :image_file_name)
     if (APP_CONFIG.s3_bucket_name && APP_CONFIG.aws_access_key_id && APP_CONFIG.aws_secret_access_key)
       {
         :path => "images/people/:attachment/:id/:style/:filename",
-        :url => ":s3_domain_url"
+        :url => ":s3_path_url"
       }
     else
       {
