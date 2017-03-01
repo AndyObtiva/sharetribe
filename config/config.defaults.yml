@@ -36,7 +36,7 @@ default: &default_settings
   # NOTE: in Heroku you can't store files in local system, so S3 should be used
 
   # Default bucket
-  s3_bucket_name: <%= "anapog-#{ENV["RAILS_ENV"]}" %>
+  s3_bucket_name: <%= ENV["SHARETRIBE_S3_BUCKET_NAME"] %>
 
   # AWS S3 region
   s3_region: <%= ENV['SHARETRIBE_S3_REGION'] || 'us-east-1' %>
@@ -47,13 +47,13 @@ default: &default_settings
   s3_cache_max_age: 86400
 
   # Bucket for files users upload directly to S3. You can add an expiration policy to these files.
-  s3_upload_bucket_name: <%= "anapog-#{ENV["RAILS_ENV"]}" %>
+  s3_upload_bucket_name: <%= ENV["SHARETRIBE_S3_UPLOAD_BUCKET_NAME"] %>
 
   # Server assets directly from the Rails application, defaults to true
   #
   # Recommended setup: Set serve_static_files to true and setup CDN distribution
   # Alternative setup: Set serve_static_files to false and setup Nginx/Apache in front of the Rails servers
-  serve_static_files: <%= ENV['serve_static_files'].to_s.downcase == 'true' %>
+  serve_static_files: <%= ENV['SHARETRIBE_SERVE_STATIC_FILES'].to_s.downcase == 'true' %>
 
   # Your CDN distribution host name
   #
@@ -69,7 +69,7 @@ default: &default_settings
   # - 0c84dc78c9435aec606bbf2428c2c476.cloudfront.com
   # - assets%0.your_domain.com
   #
-  asset_host: "<%= ENV['asset_host'] %>"
+  asset_host: "<%= ENV['SHARETRIBE_ASSET_HOST'] %>"
 
   # Your user-uploaded assets CDN distribution host name, including the desired protocol (http or https).
   #
@@ -84,7 +84,7 @@ default: &default_settings
   #
   # - https://yourdistribution.cloudfront.com
   #
-  user_asset_host: "<%= ENV['user_asset_host'] %>"
+  user_asset_host: "<%= ENV['SHARETRIBE_USER_ASSET_HOST'] %>"
 
   # AWS keys
   aws_access_key_id: "<%= ENV['AWS_ACCESS_KEY_ID'] %>"
