@@ -36,10 +36,10 @@ default: &default_settings
   # NOTE: in Heroku you can't store files in local system, so S3 should be used
 
   # Default bucket
-  s3_bucket_name: 'anapog-production'
+  s3_bucket_name: <%= "anapog-#{ENV["RAILS_ENV"]}" %>
 
   # AWS S3 region
-  s3_region: us-east-1
+  s3_region: <%= ENV['SHARETRIBE_S3_REGION'] || 'us-east-1' %>
 
   # Cache-Control: max-age time in seconds for assets uploaded to S3.
   # Default is one day. Normally, you can use the default. Links to images have
@@ -47,7 +47,7 @@ default: &default_settings
   s3_cache_max_age: 86400
 
   # Bucket for files users upload directly to S3. You can add an expiration policy to these files.
-  s3_upload_bucket_name: 'anapog-tmp-production'
+  s3_upload_bucket_name: <%= "anapog-tmp-#{ENV["RAILS_ENV"]}" %>
 
   # Server assets directly from the Rails application, defaults to true
   #
@@ -305,9 +305,9 @@ default: &default_settings
   delayed_job_max_run_time: 180
 
   # Optional HTTP basic auth for the entire installation
-  use_http_auth: false
-  http_auth_username: sharetribe
-  http_auth_password: changeme
+  use_http_auth: <%= ENV['HTTP_BASIC_AUTH_USERNAME'] && ENV['HTTP_BASIC_AUTH_PASSWORD'] %>
+  http_auth_username: <%= ENV['HTTP_BASIC_AUTH_USERNAME'] %>
+  http_auth_password: <%= ENV['HTTP_BASIC_AUTH_PASSWORD'] %>
 
   # When is the next maintenance happening?
   #
