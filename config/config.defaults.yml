@@ -305,9 +305,9 @@ default: &default_settings
   delayed_job_max_run_time: 180
 
   # Optional HTTP basic auth for the entire installation
-  use_http_auth: <%= ENV['HTTP_BASIC_AUTH_USERNAME'] && ENV['HTTP_BASIC_AUTH_PASSWORD'] %>
   http_auth_username: <%= ENV['HTTP_BASIC_AUTH_USERNAME'] %>
   http_auth_password: <%= ENV['HTTP_BASIC_AUTH_PASSWORD'] %>
+  use_http_auth: <%= ENV['HTTP_BASIC_AUTH_USERNAME'].present? && ENV['HTTP_BASIC_AUTH_PASSWORD'].present? %>
 
   # When is the next maintenance happening?
   #
