@@ -2,8 +2,6 @@ default: &default_settings
 
   structure_name: <%= ENV['SHARETRIBE_STRUCTURE_NAME'] || 'DATA_STR' %>
 
-  force_ssl: <%= (ENV['SHARETRIBE_FORCE_SSL'] || false).to_s.downcase == 'true' %>
-
   # Fill here the domain where you will be running Sharetribe.
   # If you are running on localhost, you can write here "lvh.me:3000" (which redirects to localhost port 3000)
   # The community subdomains will be added to this top domain.
@@ -124,7 +122,8 @@ default: &default_settings
 
   # If you want to force all use to be SSL secured (https://) you can set this to true
   # Note that you can set this value separately to each enironment below (e.g. if your developing)
-  always_use_ssl: false
+  # TODO rename ENV var to match config
+  always_use_ssl: <%= (ENV['SHARETRIBE_ALWAYS_USE_SSL'] || false).to_s.downcase == 'true' %>
 
   # The default locale (language) of the user interface
   # if locales are listed in the community specific settings in db. The first in that list is used as default for that community.

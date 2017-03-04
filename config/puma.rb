@@ -13,6 +13,12 @@ if ['production', 'staging'].include?(ENV['RAILS_ENV'].to_s.downcase)
 else
   threads 1,1
   workers 4
+  # TODO make code conditional and config-dependent to handle case when key is not available and variables
+  # bind 'tcp://anapog.lvh.me:3000'
+  ssl_bind 'anapog.lvh.me', '3000', {
+    key: '/Users/User/.ssh/server.key',
+    cert: '/Users/User/.ssh/server.crt'
+  }
 end
 if ENV['PUMA_PRELOAD_APP'].to_s.downcase == 'true'
   preload_app!
