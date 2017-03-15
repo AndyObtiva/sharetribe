@@ -12,3 +12,7 @@
 
       %div{:id => "transaction_status"}
         = render :partial => "transactions/status/status", :locals => { :__transaction_model => transaction_model, role: role, is_author: is_author }
+      - if transaction_model.sender_payment.present?
+        = link_to t("transactions.sender_payment"), sender_payment_person_transaction_path(id: params[:id], person_id: params[:person_id])
+      - else
+        = link_to t("conversations.status_link.accept_offer"), new_person_transaction_sender_payment_path(transaction_id: params[:id], person_id: params[:person_id])

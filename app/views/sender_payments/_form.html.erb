@@ -1,0 +1,30 @@
+Please include recipient information to email them a confirmation link and number.
+<%= form_for([@person, @transaction, @payment]) do |f| %>
+  <% if @payment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@payment.errors.count, "error") %> prohibited this payment from being saved:</h2>
+
+      <ul>
+      <% @payment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :recipient_email %><br>
+    <%= f.email_field :recipient_email %>
+  </div>
+  <%# TODO Support in the future %>
+  <!-- <div class="field"> -->
+    <%#= f.label :recipient_phone %><br>
+    <%#= f.phone_field :recipient_phone %>
+  <!-- </div> -->
+
+  <br>
+
+  <div class="actions">
+    <%= f.submit 'Pay with PayPal' %>
+  </div>
+<% end %>

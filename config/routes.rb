@@ -108,6 +108,7 @@ Kassi::Application.routes.draw do
 
   devise_for :people, only: :omniauth_callbacks, controllers: { omniauth_callbacks: "sessions" }
 
+  resources :sender_payments#, only: [:update], constraints: { format: 'json' }
   # Adds locale to every url right after the root path
   scope "(/:locale)", :constraints => { :locale => locale_matcher } do
 
@@ -434,7 +435,12 @@ Kassi::Application.routes.draw do
             get :billing_agreement_cancel
           end
         end
-        resources :transactions, only: [:show, :new, :create]
+        resources :transactions, only: [:show, :new, :create] do
+          resources :sender_payments
+          member do
+            get :sender_payment
+          end
+        end
         resource :settings do
           member do
             get :account

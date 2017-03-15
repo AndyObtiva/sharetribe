@@ -84,6 +84,7 @@ gem "premailer", "~> 1.8.2"
 gem 'stringex', '~> 2.5.2'
 gem 'paypal-sdk-permissions', '~> 1.96.4'
 gem 'paypal-sdk-merchant', '~> 1.116.0'
+gem 'paypal-sdk-rest'
 gem 'airbrake', '~> 4.1.0'
 gem 'librato-rails', "~> 0.11.1"
 
@@ -132,6 +133,9 @@ gem "i18n-js",
 gem "request_store", "~> 1.3"
 gem 'exception_notification'
 
+gem 'email_validator'
+gem 'phony_rails'
+
 group :staging, :production do
   gem 'newrelic_rpm', '~> 3.9.1.236'
   gem 'rails_12factor', '~> 0.0.3'
@@ -145,6 +149,7 @@ end
 
 group :development, :test do
   gem 'rubocop', '~> 0.37.2', require: false
+  gem 'awesome_print', '~> 1.6.1'
   gem 'puts_debuggerer'
 end
 
@@ -160,7 +165,6 @@ group :development do
   gem 'quiet_assets', "~> 1.1.0"
   gem 'better_errors', "~> 2.1.1"
   gem 'web-console', '~> 2.0'
-  gem 'awesome_print', '~> 1.6.1'
 end
 
 group :test do

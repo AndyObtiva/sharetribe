@@ -1,0 +1,8 @@
+- content_for :title_header do
+  %h1 Payment Confirmation
+
+#edit_payment_form_container.centered-section
+  = render 'form'
+  = link_to 'Show', sender_payment_person_transaction_path(id: params[:transaction_id], person_id: params[:person_id])
+  |
+  = link_to 'Back', :back

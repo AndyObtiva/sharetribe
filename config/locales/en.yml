@@ -293,6 +293,7 @@ en:
       transactions:
         export_all_as_csv: "Export all as CSV"
         transactions: "View transactions"
+        sender_payment: "Sender Payment"
         headers:
           conversation: "Conversation thread"
           listing: Listing

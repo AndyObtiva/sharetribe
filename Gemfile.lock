@@ -193,6 +193,8 @@ GEM
     email_spec (1.6.0)
       launchy (~> 2.1)
       mail (~> 2.2)
+    email_validator (1.6.0)
+      activemodel
     erubis (2.7.0)
     exception_notification (4.2.1)
       actionmailer (>= 4.0, < 6)
@@ -352,6 +354,13 @@ GEM
       paypal-sdk-core (~> 0.3.0)
     paypal-sdk-permissions (1.96.4)
       paypal-sdk-core (~> 0.3.0)
+    paypal-sdk-rest (1.6.0)
+      multi_json (~> 1.0)
+      xml-simple
+    phony (2.15.41)
+    phony_rails (0.14.5)
+      activesupport (>= 3.0)
+      phony (~> 2.15)
     possibly (0.2.0)
     powerpack (0.1.1)
     premailer (1.8.7)
@@ -373,7 +382,7 @@ GEM
     pusher-client (0.6.2)
       json
       websocket (~> 1.0)
-    puts_debuggerer (0.2.0)
+    puts_debuggerer (0.5.0)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.5)
@@ -571,6 +580,7 @@ DEPENDENCIES
   devise-encryptable (~> 0.2.0)
   dynamic_form (~> 1.1.4)
   email_spec (~> 1.6.0)
+  email_validator
   exception_notification
   factory_girl_rails (~> 4.4.1)
   faker (~> 1.7.3)
@@ -601,6 +611,8 @@ DEPENDENCIES
   passenger (~> 5.0.30)
   paypal-sdk-merchant (~> 1.116.0)
   paypal-sdk-permissions (~> 1.96.4)
+  paypal-sdk-rest
+  phony_rails
   possibly (~> 0.2.0)
   premailer (~> 1.8.2)
   protected_attributes (~> 1.1.3)

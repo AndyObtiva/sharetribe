@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Recipient Email:</strong>
+  <%= @payment.recipient_email %>
+</p>
+
+<p>
+  <strong>Recipient Phone:</strong>
+  <%= @payment.recipient_phone %>
+</p>
+
+<%= link_to 'Edit', edit_person_transaction_sender_payment_path(@payment, transaction_id: params[:id], person_id: params[:person_id]) %> |
+<%= link_to 'Back', :back %>

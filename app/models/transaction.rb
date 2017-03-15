@@ -72,6 +72,9 @@ class Transaction < ActiveRecord::Base
   monetize :unit_price_cents, with_model_currency: :unit_price_currency
   monetize :shipping_price_cents, allow_nil: true, with_model_currency: :unit_price_currency
 
+  has_one :sender_payment, -> { order created_at: :desc }, class_name: 'SenderPayment', foreign_key: 'transaction_id'
+  has_one :traveller_payment, class_name: 'TravellerPayment', foreign_key: 'transaction_id'
+
   scope :for_person, -> (person){
     joins(:listing)
     .where("listings.author_id = ? OR starter_id = ?", person.id, person.id)
@@ -146,12 +149,14 @@ class Transaction < ActiveRecord::Base
   def seller
     author
   end
+  alias :traveller :author
 
   # TODO This assumes that author is seller (which is true for all offers, sell, give, rent, etc.)
   # Change it so that it looks for TransactionProcess.author_is_seller
   def buyer
     starter
   end
+  alias :sender :starter
 
   def participations
     [author, starter]

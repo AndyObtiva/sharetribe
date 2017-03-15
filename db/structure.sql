@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.32, for osx10.10 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.24, for osx10.10 (x86_64)
 --
--- Host: 127.0.0.1    Database: sharetribe_development
+-- Host: localhost    Database: sharetribe_development
 -- ------------------------------------------------------
--- Server version	5.7.15-log
+-- Server version	5.6.24
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -1154,6 +1154,35 @@ CREATE TABLE `payment_settings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `payments`
+--
+
+DROP TABLE IF EXISTS `payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `paypal_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `payer_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `intent` int(11) DEFAULT NULL,
+  `state` int(11) DEFAULT NULL,
+  `transaction_id` int(11) DEFAULT NULL,
+  `data` text COLLATE utf8_unicode_ci,
+  `error` text COLLATE utf8_unicode_ci,
+  `recipient_email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `recipient_phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_payments_on_created_at` (`created_at`) USING BTREE,
+  KEY `index_payments_on_paypal_id` (`paypal_id`) USING BTREE,
+  KEY `index_payments_on_payer_id` (`payer_id`) USING BTREE,
+  KEY `index_payments_on_transaction_id` (`transaction_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `paypal_accounts`
 --
 
@@ -1597,7 +1626,7 @@ CREATE TABLE `transactions` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-10-19 15:53:24
+-- Dump completed on 2017-03-18 14:54:22
 INSERT INTO schema_migrations (version) VALUES ('20080806070738');
 
 INSERT INTO schema_migrations (version) VALUES ('20080807071903');
@@ -3189,4 +3218,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161018105521');
 INSERT INTO schema_migrations (version) VALUES ('20161019125057');
 
 INSERT INTO schema_migrations (version) VALUES ('20161023074355');
+
+INSERT INTO schema_migrations (version) VALUES ('20170307131831');
 
