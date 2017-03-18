@@ -1,10 +1,7 @@
 - content_for :title_header do
-  %h1 Payment Receipt
+  %h1 Payment Confirmation
 
 #edit_payment_form_container.centered-section
-  %p(id="notice")
-    = notice
-
   %p
     %strong Recipient Email:
     = @payment.recipient_email
@@ -13,26 +10,29 @@
     %strong PayPal Payment ID:
     #payment_paypal_id= @payment.paypal_id
     %input(id="payment_id" type="hidden" value="#{@payment.id}")
+    %input(id="payment_receipt_url" type="hidden" value="#{sender_payment_receipt_person_transaction_path(transaction_id: params[:id], person_id: params[:person_id])}")
+    %input(id="paypal_client_id" type="hidden" value="#{PAYPAL_CONFIG.client_id}")
+    %input(id="paypal_mode" type="hidden" value="#{PAYPAL_CONFIG.mode}")
 
   = form_for @payment do |f|
     = f.hidden_field :payer_id
 
   #paypal-button
 
-  = link_to 'Edit', edit_person_transaction_sender_payment_path(@payment, transaction_id: params[:id], person_id: params[:person_id])
-  |
+  =# link_to 'Edit', edit_person_transaction_sender_payment_path(@payment, transaction_id: params[:id], person_id: params[:person_id])
   = link_to 'Back', :back
 
+  //TODO handle failed state condition
   - if @payment.created?
     %script(src="https://www.paypalobjects.com/api/checkout.js")
     :javascript
       paypal.Button.render({
 
-          env: 'sandbox', // Specify 'sandbox' for the test environment
+          env: $('#paypal_mode').val(), // Specify 'sandbox' for the test environment
 
           client: {
-              sandbox:    'AW9I0L0H92j2HRoZkke1OkbsdSdbsumfvvlimra6gM6JmlBIy6bepSPEi608J5uo62ICDrABRKsCp5Qw',
-              production: 'xxxxxxxxx'
+              sandbox:    $('#paypal_client_id').val(),
+              production: $('#paypal_client_id').val()
           },
 
           payment: function() {
@@ -50,11 +50,13 @@
                 dataType: 'json',
                 data: $('.edit_sender_payment').serialize()
               }).done(function(data) {
-                //console.log(data);
-                //TODO redirect to next page
-                
+                window.location = $('#payment_receipt_url').val()
+
               });
               //TODO handle error condition
          }
 
       }, '#paypal-button');
+  - else
+    :javascript
+      window.location = document.getElementById('payment_receipt_url').value

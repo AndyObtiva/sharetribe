@@ -439,6 +439,7 @@ Kassi::Application.routes.draw do
           resources :sender_payments
           member do
             get :sender_payment
+            get :sender_payment_receipt
           end
         end
         resource :settings do
