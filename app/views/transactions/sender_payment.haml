@@ -26,37 +26,39 @@
   - if @payment.created?
     %script(src="https://www.paypalobjects.com/api/checkout.js")
     :javascript
-      paypal.Button.render({
+      window.addEventListener('load', function() {
+        paypal.Button.render({
 
-          env: $('#paypal_mode').val(), // Specify 'sandbox' for the test environment
+            env: $('#paypal_mode').val(), // Specify 'sandbox' for the test environment
 
-          client: {
-              sandbox:    $('#paypal_client_id').val(),
-              production: $('#paypal_client_id').val()
-          },
+            client: {
+                sandbox:    $('#paypal_client_id').val(),
+                production: $('#paypal_client_id').val()
+            },
 
-          payment: function() {
-            return new Promise( function(resolve, reject) { resolve($('#payment_paypal_id').text()) } );
-          },
+            payment: function() {
+              return new Promise( function(resolve, reject) { resolve($('#payment_paypal_id').text()) } );
+            },
 
-          commit: true,
+            commit: true,
 
-          onAuthorize: function(data, actions) {
-              $('#sender_payment_payer_id').val(data.payerID)
+            onAuthorize: function(data, actions) {
+                $('#sender_payment_payer_id').val(data.payerID)
 
-              $.ajax({
-                url: '/sender_payments/' + $('#payment_id').val() + '.json',
-                method: 'put',
-                dataType: 'json',
-                data: $('.edit_sender_payment').serialize()
-              }).done(function(data) {
-                window.location = $('#payment_receipt_url').val()
+                $.ajax({
+                  url: '/sender_payments/' + $('#payment_id').val() + '.json',
+                  method: 'put',
+                  dataType: 'json',
+                  data: $('.edit_sender_payment').serialize()
+                }).done(function(data) {
+                  window.location = $('#payment_receipt_url').val()
 
-              });
-              //TODO handle error condition
-         }
+                });
+                //TODO handle error condition
+           }
 
-      }, '#paypal-button');
+        }, '#paypal-button');
+      });
   - else
     :javascript
       window.location = document.getElementById('payment_receipt_url').value
