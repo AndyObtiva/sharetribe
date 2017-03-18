@@ -24,6 +24,9 @@ test: &default
 development:
   <<: *default
 
+staging:
+  <<: *default
+
 production:
   <<: *default
   mode: live
