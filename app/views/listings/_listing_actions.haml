@@ -20,7 +20,8 @@
     = render partial: "delivery_opts", locals: { delivery_opts: delivery_opts, is_author: is_author }
   - else
 
-    = form_tag form_path, :method => :get, :id => "booking-dates" do
+    -# no need for new anymore.. create right away 2017-03-19 AM
+    = form_tag form_path.sub('/new', ''), :method => :post, :id => "booking-dates" do
 
       - if [:day, :night].include?(@listing.quantity_selector&.to_sym)
         - blocked_dates_result.on_success do |blocked_dates|

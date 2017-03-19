@@ -2064,6 +2064,7 @@ en:
     quantity: "Quantity: %{quantity}"
     unit_price: "Unit price: %{unit_price}"
     total: "Total:"
+    sender_payment: "Sender Payment"
   unit:
     day: day
     days: days

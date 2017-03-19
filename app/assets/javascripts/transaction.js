@@ -102,7 +102,7 @@ window.ST.transaction = window.ST.transaction || {};
     var form_id = "#transaction-form";
     $(form_id).validate({
       rules: {
-        "message": {required: true}
+        "message": {required: false}
       },
       submitHandler: function(form) {
         window.disable_and_submit(form_id, form, "false", locale);

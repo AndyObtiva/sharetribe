@@ -117,7 +117,7 @@ class TransactionsController < ApplicationController
     end
 
     tx_model = Transaction.where(id: tx[:id]).first
-    tx_model.confirm_delivery!    
+    tx_model.confirm_delivery!
   end
 
   def new
@@ -418,7 +418,7 @@ class TransactionsController < ApplicationController
   def after_create_flash(process:)
     case process[:process]
     when :none
-      t("layouts.notifications.message_sent")
+      t("layouts.notifications.message_sent") if params[:id]
     else
       raise NotImplementedError.new("Not implemented for process #{process}")
     end
@@ -443,7 +443,7 @@ class TransactionsController < ApplicationController
       # TODO: remove references to transaction model
       transaction = Transaction.find(transaction[:id])
 
-      Delayed::Job.enqueue(MessageSentJob.new(transaction.conversation.messages.last.id, community_id))
+      Delayed::Job.enqueue(MessageSentJob.new(transaction.conversation.messages.last.id, community_id)) if transaction.conversation.messages.last
     else
       raise NotImplementedError.new("Not implemented for process #{process}")
     end
@@ -482,12 +482,13 @@ class TransactionsController < ApplicationController
   end
 
   def validate_form(form_params, process)
-    process = [process].flatten.first
-    if process[:process] == :none && form_params[:message].blank?
-      Result::Error.new("Message cannot be empty")
-    else
+    # NOTE: 2017-03-19 AM: No need for validation anymore as we create right away with empty message at first
+    # process = [process].flatten.first
+    # if process[:process] == :none && form_params[:message].blank?
+    #   Result::Error.new("Message cannot be empty")
+    # else
       Result::Success.new
-    end
+    # end
   end
 
   def price_break_down_locals(tx)

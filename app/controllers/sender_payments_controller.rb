@@ -36,7 +36,7 @@ class SenderPaymentsController < ApplicationController
 
 
     if @payment.save
-      redirect_to sender_payment_person_transaction_path(id: params[:transaction_id], person_id: params[:person_id]), notice: 'Payment was successfully created.'
+      redirect_to sender_payment_person_transaction_path(id: params[:transaction_id], person_id: params[:person_id]), notice: 'Please confirm payment details and click on PayPal Check out button at the bottom once ready.'
     else
       render :new
     end
