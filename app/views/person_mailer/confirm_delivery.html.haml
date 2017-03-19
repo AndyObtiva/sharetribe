@@ -1,0 +1,18 @@
+%tr
+  %td{:align => "left"}
+    %font{body_font}
+      = t("emails.confirm_delivery.delivery_coming_soon", :date => 5.days.since(Time.now), :title => @listing.title, :sender => @sender.full_name, :traveller => @traveller.full_name)
+
+%tr
+  %td{:align => "left", :style => "padding-top: 15px;"}
+    %font{body_font}
+      = raw t("emails.confirm_delivery.confirm_once_delivered", :confirm_link => @confirm_link)
+
+%tr
+  %td{:align => "left", :style => "padding-top: 15px;"}
+    %font{body_font}
+      = raw t("emails.confirm_delivery.alternatively_provide_traveller_confirmation_number", :confirmation_number => @sender_payment.confirmation_number)
+
+%tr
+  %td{:align => "left", :style => "padding-top: 25px; padding-bottom: 25px;"}
+    = render :partial => "green_action_button", :locals => { :text => t("emails.confirm_delivery.confirm"), :url => @confirm_url}

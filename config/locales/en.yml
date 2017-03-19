@@ -756,6 +756,12 @@ en:
       powered_by: "%{service_name} is powered by the %{sharetribe_link} marketplace platform."
       create_own: "Want to create your own online marketplace website like %{service_name}? %{learn_more}."
       learn_more: "Learn more"
+    confirm_delivery:
+      subject_for_confirm_delivery: 'You are receiving an item soon! Please confirm once delivered!'
+      delivery_coming_soon: 'You are receiving an item (%{title}) on %{date} from %{sender} via %{traveller}. Please confirm once delivered!'
+      confirm_once_delivered: 'Once traveller delivers item, please confirm by clicking on this link: <br><br>%{confirm_link}'
+      alternatively_provide_traveller_confirmation_number: 'Alternatively, please provide traveller with following confirmation number to obtain delivery: <br><br>%{confirmation_number}'
+      confirm: 'Confirm Receiving Delivery'
     confirm_reminder:
       you_have_not_yet_confirmed_or_canceled_request: "You have not yet confirmed or canceled the order %{request_link}. If the order has been completed, you should confirm that. After that you can give feedback to %{other_party_given_name}."
       remember_to_confirm_request: "Remember to confirm or cancel a request"
@@ -1303,6 +1309,7 @@ en:
       you_must_log_in_to_send_a_comment: "You must log in to send a new comment"
       you_must_log_in_to_send_a_message: "You must log in to %{service_name} to send a message to another user."
       you_must_log_in_to_do_a_transaction: "You must log in to %{service_name} to do a transaction."
+      you_must_log_in_to_make_a_payment: "You must log in to %{service_name} to make a payment."
       you_must_log_in_to_view_this_content: "You must log in to view this content"
       you_must_log_in_to_view_this_page: "You must log in to view this page"
       you_must_log_in_to_view_your_inbox: "You must log in to %{service_name} to view your inbox."
@@ -1868,6 +1875,7 @@ en:
       newsletters: "Emails from administrators"
       community_updates: Newsletters
       email_about_confirm_reminders: "...I have forgotten to confirm an order as completed"
+      email_about_confirm_delivery: "...confirming item has been delivered."
       email_about_new_comments_to_own_listing: "...someone comments on my offer or request"
       email_about_new_messages: "...someone sends me a message"
       email_about_new_received_testimonials: "...someone gives me feedback"

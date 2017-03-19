@@ -130,6 +130,35 @@ class PersonMailer < ActionMailer::Base
     end
   end
 
+  # Remind users of conversations that have not been accepted or rejected
+  def confirm_delivery(recipient, sender_payment)
+    @email_type = "email_about_confirm_delivery"
+    @recipient = recipient
+    @sender_payment = sender_payment
+    @transaction = sender_payment.listing_transaction
+    @listing = sender_payment.listing
+    @sender = sender_payment.sender
+    @traveller = @transaction.traveller
+    community = @transaction.community
+    @confirm_url = confirm_delivery_person_transaction_url(person_id: @recipient, id: @transaction, host: community.full_domain)
+    @confirm_link = "<a href='#{@confirm_url}'>#{@confirm_url}</a>".html_safe
+    recipient_email = sender_payment.recipient_email
+    set_up_layout_variables(recipient, community, @email_type)
+    with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
+      template = "confirm_delivery"
+      premailer_mail(:to => recipient_email,
+                     :from => community_specific_sender(community),
+                     :subject => t("emails.confirm_delivery.subject_for_confirm_delivery")) do |format|
+        format.html {
+          pd recipient.locale
+          pd community.locales.map(&:to_sym)
+          pd render_to_string(template), print_engine: :puts
+          render template
+        }
+      end
+    end
+  end
+
   # Remind users to give feedback
   def testimonial_reminder(conversation, recipient, community)
     @email_type = "email_about_testimonial_reminders"

@@ -573,6 +573,21 @@ class Person < ActiveRecord::Base
     joins(:communities).where("communities.id" => community.id)
   end
 
+  def self.autocreate_for(email, community, password = 'pass1234')
+    person = Person.joins(:emails).where(emails: {address: email, community_id: community.id}, community_id: community.id).first
+    if person
+      person
+    else
+      username = email.gsub(/[@.]/, '_')
+      while Person.exists?(username: username)
+          username += '1' #highly unlikely to repeat twice, so no fancy algorithm
+      end
+      Person.create!(password: password, username: username, community_id: community.id, locale: 'en').tap do |p|
+        p.emails.create!(address: email, community_id: community.id)
+      end
+    end
+  end
+
 
   # Overrides method injected from Devise::DatabaseAuthenticatable
   # Updates password with password that has been rehashed with new algorithm.

@@ -2,17 +2,7 @@
   %h1 Payment Confirmation
 
 #edit_payment_form_container.centered-section
-  %p
-    %strong Recipient Email:
-    = @payment.recipient_email
-
-  %p
-    %strong PayPal Payment ID:
-    #payment_paypal_id= @payment.paypal_id
-    %input(id="payment_id" type="hidden" value="#{@payment.id}")
-    %input(id="payment_receipt_url" type="hidden" value="#{sender_payment_receipt_person_transaction_path(transaction_id: params[:id], person_id: params[:person_id])}")
-    %input(id="paypal_client_id" type="hidden" value="#{PAYPAL_CONFIG.client_id}")
-    %input(id="paypal_mode" type="hidden" value="#{PAYPAL_CONFIG.mode}")
+  = render 'sender_payment_details'
 
   = form_for @payment do |f|
     = f.hidden_field :payer_id
@@ -20,9 +10,10 @@
   #paypal-button
 
   =# link_to 'Edit', edit_person_transaction_sender_payment_path(@payment, transaction_id: params[:id], person_id: params[:person_id])
-  = link_to 'Back', :back
+  = link_to 'Back', person_transaction_path(id: params[:id], person_id: params[:person_id])
 
   //TODO handle failed state condition
+  //TODO push js to js file
   - if @payment.created?
     %script(src="https://www.paypalobjects.com/api/checkout.js")
     :javascript

@@ -27,8 +27,8 @@
 require 'paypal-sdk-rest'
 
 class SenderPayment < Payment
-  delegate :sender, to: :transaction
-  delegate :payer, to: :transaction
+  delegate :sender, to: :listing_transaction
+  delegate :payer, to: :listing_transaction
 
   # NOTE: disabled as might not be needed with validation afterward
   # phony_normalize :recipient_phone#, default_country_code: 'US'
@@ -46,7 +46,40 @@ class SenderPayment < Payment
     sender
   end
 
+  def recipient
+    community = listing_transaction.community
+    Person.joins(:emails).where(emails: {address: recipient_email, community_id: community.id}, community_id: community.id).first
+  end
+
+  def confirmation_number
+    paypal_id && paypal_id.sub('PAY-', '')
+  end
+
+  def capture_payment
+    #TODO implement and perhaps add a capture intent enum value (to be called by Transaction#confirm_payment!)
+
+    # begin
+    #   @authorization = PayPal::SDK::REST::Authorization.find("84H59271K1950474X")
+    #   @capture = @authorization.capture({
+    #     :amount => {
+    #       :currency => "USD",
+    #       :total => "1.00" },
+    #     :is_final_capture => true })
+    #
+    #   if @capture.success? # Return true or false
+    #     logger.info "Capture[#{@capture.id}]"
+    #   else
+    #     logger.error @capture.error.inspect
+    #   end
+    # rescue ResourceNotFound => err
+    #   # It will throw ResourceNotFound exception if the payment not found
+    #   logger.error "Authorization Not Found"
+    # end
+  end
+
   private
+
+  #TODO offload to background with delayed job
 
   def paypal_payment_created
     self.data = {
@@ -91,6 +124,8 @@ class SenderPayment < Payment
     if @paypal_payment.execute( :payer_id => payer_id )
       self.state = @paypal_payment.state
       self.data = @paypal_payment.to_hash
+      recipient = Person.autocreate_for(recipient_email, listing_transaction.community)
+      PersonMailer.delay.confirm_delivery(recipient, self)
     else
       self.error = @paypal_payment.error  # Error Hash
       self.errors[:paypal_id] << "#{self.error['message']}: [#{self.error['name']}] #{self.error['details'][0]['field']} <- #{self.error['details'][0]['issue']}"

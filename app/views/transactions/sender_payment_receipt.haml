@@ -2,42 +2,7 @@
   %h1 Payment Receipt
 
 #edit_payment_form_container.centered-section
-  %p
-    %strong PayPal Payment ID
-    #payment_paypal_id= @payment.paypal_id
-    %input(id="payment_id" type="hidden" value="#{@payment.id}")
-
-  %table
-    %thead
-      %tr
-        %th Item Description
-        %th Quantity
-        %th Price
-    %tbody
-      %tr
-        %td= link_to @payment.data['transactions'][0]['description'], @payment.listing
-        %td= @payment.data['transactions'][0]['item_list']['items'][0]['quantity']
-        %td
-          = @payment.listing.price_symbol
-          = @payment.data['transactions'][0]['amount']['total']
-          = @payment.data['transactions'][0]['amount']['currency']
-      %tr
-        %td
-        %td Total:
-        %td
-          = @payment.listing.price_symbol
-          = @payment.data['transactions'][0]['amount']['total']
-          = @payment.data['transactions'][0]['amount']['currency']
-
-  %p
-    %strong Meeting Address (Origin)
-  %p
-    = @payment.listing.origin_loc.address
-
-  %p
-    %strong Shipping Address (Destination)
-  %p
-    = @payment.listing.destination_loc.address
+  = render 'sender_payment_details'
 
   = form_for @payment do |f|
     = f.hidden_field :payer_id

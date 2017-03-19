@@ -1,0 +1,54 @@
+%p
+  %strong Confirmation Number:
+  #payment_paypal_id= @payment.paypal_id
+  %input(id="payment_id" type="hidden" value="#{@payment.id}")
+  %input(id="payment_receipt_url" type="hidden" value="#{sender_payment_receipt_person_transaction_path(transaction_id: params[:id], person_id: params[:person_id])}")
+  %input(id="paypal_client_id" type="hidden" value="#{PAYPAL_CONFIG.client_id}")
+  %input(id="paypal_mode" type="hidden" value="#{PAYPAL_CONFIG.mode}")
+
+  %small
+    Confirmation number above is emailed to recipient with a confirmation link.
+    Upon item receipt, recipient must click on confirmation link or provide confirmation number to traveller.
+
+%p
+  %strong Recipient Email:
+  = @payment.recipient_email
+
+%input(id="payment_id" type="hidden" value="#{@payment.id}")
+
+%table
+  %thead
+    %tr
+      %th Item Description
+      %th Quantity
+      %th Price
+  %tbody
+    %tr
+      %td= link_to @payment.data['transactions'][0]['description'], @payment.listing
+      %td= @payment.data['transactions'][0]['item_list']['items'][0]['quantity']
+      %td
+        = @payment.listing.price_symbol
+        = @payment.data['transactions'][0]['amount']['total']
+        = @payment.data['transactions'][0]['amount']['currency']
+    %tr
+      %td
+      %td Total:
+      %td
+        = @payment.listing.price_symbol
+        = @payment.data['transactions'][0]['amount']['total']
+        = @payment.data['transactions'][0]['amount']['currency']
+
+%p
+  %strong Meeting Address (Origin)
+%p
+  = @payment.listing.origin_loc.address
+
+%p
+  %strong Shipping Address (Destination)
+%p
+  = @payment.listing.destination_loc.address
+
+%p
+  %strong NOTE:
+  Payment amount has only been frozen in payer account.
+  It will be deducted once recipient confirms receipt of item from traveller.

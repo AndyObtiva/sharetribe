@@ -203,4 +203,8 @@ class Transaction < ActiveRecord::Base
     Maybe(read_attribute(:unit_type)).to_sym.or_else(nil)
   end
 
+  def confirm_delivery!
+    # TODO capture sender payment and perform traveller payout
+  end
+
 end

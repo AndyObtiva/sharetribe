@@ -1,5 +1,8 @@
-# NOTE: Deals primarily with SenderPayment objects (despite generic name)
 class SenderPaymentsController < ApplicationController
+  before_action do |controller|
+    controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_make_a_payment")
+  end
+
   before_action :set_person
   before_action :set_transaction
   before_action :set_payment, only: [:show, :edit, :update, :destroy]

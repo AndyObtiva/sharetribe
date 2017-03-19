@@ -86,6 +86,40 @@ class TransactionsController < ApplicationController
     @payment = tx_model.sender_payment
   end
 
+  def confirm_delivery
+    m_participant =
+      Maybe(
+        MarketplaceService::Transaction::Query.transaction_with_conversation(
+        transaction_id: params[:id],
+        person_id: @current_user.id,
+        community_id: @current_community.id))
+      .map { |tx_with_conv| [tx_with_conv, :participant] }
+
+    m_admin =
+      Maybe(@current_user.has_admin_rights?)
+      .select { |can_show| can_show }
+      .map {
+        MarketplaceService::Transaction::Query.transaction_with_conversation(
+          transaction_id: params[:id],
+          community_id: @current_community.id)
+      }
+      .map { |tx_with_conv| [tx_with_conv, :admin] }
+
+    transaction_conversation, role = m_participant.or_else { m_admin.or_else([]) }
+
+    tx = transaction_service.get(community_id: @current_community.id, transaction_id: params[:id])
+         .maybe()
+         .or_else(nil)
+
+    unless tx.present? && transaction_conversation.present?
+      flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
+      return redirect_to search_path
+    end
+
+    tx_model = Transaction.where(id: tx[:id]).first
+    tx_model.confirm_delivery!    
+  end
+
   def new
     Result.all(
       ->() {
