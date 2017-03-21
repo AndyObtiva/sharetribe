@@ -66,8 +66,7 @@ class InboxesController < ApplicationController
         inbox_item[:starter],
         payment_sum
       )
-
-      action_messages.last[:content]
+      action_messages.last.try(:[], :content)
     end
   end
 

@@ -151,7 +151,7 @@
       - blocked_dates_result.on_success do
         - listing_transaction = @listing.transaction_for(@current_user)
         - if listing_transaction.present? && listing_transaction.sender_paid?
-          Already Purchased.
+          Purchased.
           = link_to t("transactions.payment_receipt"), sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
         - else
           %button.enabled-book-button
