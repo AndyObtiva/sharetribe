@@ -150,9 +150,6 @@ class PersonMailer < ActionMailer::Base
                      :from => community_specific_sender(community),
                      :subject => t("emails.confirm_delivery.subject_for_confirm_delivery")) do |format|
         format.html {
-          pd recipient.locale
-          pd community.locales.map(&:to_sym)
-          pd render_to_string(template), print_engine: :puts
           render template
         }
       end
