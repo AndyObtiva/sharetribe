@@ -19,9 +19,7 @@
   - if is_author
     = render partial: "delivery_opts", locals: { delivery_opts: delivery_opts, is_author: is_author }
   - else
-
-    -# no need for new anymore.. create right away 2017-03-19 AM
-    = form_tag form_path.sub('/new', ''), :method => :post, :id => "booking-dates" do
+    = form_tag form_path, :method => form_method, :id => "booking-dates" do
 
       - if [:day, :night].include?(@listing.quantity_selector&.to_sym)
         - blocked_dates_result.on_success do |blocked_dates|
@@ -151,9 +149,14 @@
       = hidden_field_tag(:listing_id, @listing.id)
 
       - blocked_dates_result.on_success do
-        %button.enabled-book-button
-          .content
-            = action_button_label(@listing)
+        - listing_transaction = @listing.transaction_for(@current_user)
+        - if listing_transaction.present? && listing_transaction.sender_paid?
+          Already Purchased.
+          = link_to t("transactions.payment_receipt"), sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+        - else
+          %button.enabled-book-button
+            .content
+              = action_button_label(@listing)
 
       - blocked_dates_result.on_error do
         %button.disabled-book-button{disabled: true}

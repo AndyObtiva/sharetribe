@@ -117,6 +117,7 @@ class SenderPayment < Payment
     end
   end
 
+  #TODO handle error conditions by using transactions and paypal-payment re-lookup
   def paypal_payment_executed
     return unless payer_id.present? && payer_id_changed?
     self.error = nil
@@ -126,6 +127,7 @@ class SenderPayment < Payment
       self.data = @paypal_payment.to_hash
       recipient = Person.autocreate_for(recipient_email, listing_transaction.community)
       PersonMailer.delay.confirm_delivery(recipient, self)
+      listing.update_attribute(:open, false)
     else
       self.error = @paypal_payment.error  # Error Hash
       self.errors[:paypal_id] << "#{self.error['message']}: [#{self.error['name']}] #{self.error['details'][0]['field']} <- #{self.error['details'][0]['issue']}"

@@ -11,7 +11,7 @@ class ListingVisibilityGuard
   end
 
   def visible?
-     authorized_to_view? && (open? || is_author?)
+     authorized_to_view? && (open? || is_author? || is_payer?)
   end
 
   def authorized_to_view?
@@ -48,5 +48,9 @@ class ListingVisibilityGuard
 
   def is_author?
     @user == @listing.author
+  end
+
+  def is_payer?
+    @listing.purchased_by?(@user)
   end
 end

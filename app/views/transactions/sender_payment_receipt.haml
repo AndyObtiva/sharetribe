@@ -13,4 +13,6 @@
     =# link_to 'Edit', edit_person_transaction_sender_payment_path(@payment, transaction_id: params[:id], person_id: params[:person_id])
     = link_to 'Print', "javascript: window.print()"
     |
+    = link_to 'Listing', @payment.listing
+    |
     = link_to 'Home', '/'

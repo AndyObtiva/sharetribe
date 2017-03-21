@@ -2044,6 +2044,8 @@ en:
       days:
         one: "%{count} day"
         other: "%{count} days"
+  sender_payments:
+    continue_to_pay: "Continue To Pay"
   transactions:
     initiate:
       booked_days: "Booked days:"
@@ -2065,6 +2067,8 @@ en:
     unit_price: "Unit price: %{unit_price}"
     total: "Total:"
     sender_payment: "Sender Payment"
+    payment_receipt: "View Payment Receipt"
+    ongoing_conversation: "Continue Shipping Discussion"
   unit:
     day: day
     days: days

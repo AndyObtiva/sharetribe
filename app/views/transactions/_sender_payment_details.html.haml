@@ -1,6 +1,7 @@
 %p
   %strong Confirmation Number:
-  #payment_paypal_id= @payment.paypal_id
+  #payment_confirmation_number= @payment.confirmation_number 
+  %input(id="payment_paypal_id" type="hidden" value="#{@payment.paypal_id}")
   %input(id="payment_id" type="hidden" value="#{@payment.id}")
   %input(id="payment_receipt_url" type="hidden" value="#{sender_payment_receipt_person_transaction_path(transaction_id: params[:id], person_id: params[:person_id])}")
   %input(id="paypal_client_id" type="hidden" value="#{PAYPAL_CONFIG.client_id}")

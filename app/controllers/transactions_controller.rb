@@ -19,104 +19,14 @@ class TransactionsController < ApplicationController
   )
 
   def sender_payment
-    m_participant =
-      Maybe(
-        MarketplaceService::Transaction::Query.transaction_with_conversation(
-        transaction_id: params[:id],
-        person_id: @current_user.id,
-        community_id: @current_community.id))
-      .map { |tx_with_conv| [tx_with_conv, :participant] }
-
-    m_admin =
-      Maybe(@current_user.has_admin_rights?)
-      .select { |can_show| can_show }
-      .map {
-        MarketplaceService::Transaction::Query.transaction_with_conversation(
-          transaction_id: params[:id],
-          community_id: @current_community.id)
-      }
-      .map { |tx_with_conv| [tx_with_conv, :admin] }
-
-    transaction_conversation, role = m_participant.or_else { m_admin.or_else([]) }
-
-    tx = transaction_service.get(community_id: @current_community.id, transaction_id: params[:id])
-         .maybe()
-         .or_else(nil)
-
-    unless tx.present? && transaction_conversation.present?
-      flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
-      return redirect_to search_path
-    end
-
-    tx_model = Transaction.where(id: tx[:id]).first
     @payment = tx_model.sender_payment
   end
 
   def sender_payment_receipt
-    m_participant =
-      Maybe(
-        MarketplaceService::Transaction::Query.transaction_with_conversation(
-        transaction_id: params[:id],
-        person_id: @current_user.id,
-        community_id: @current_community.id))
-      .map { |tx_with_conv| [tx_with_conv, :participant] }
-
-    m_admin =
-      Maybe(@current_user.has_admin_rights?)
-      .select { |can_show| can_show }
-      .map {
-        MarketplaceService::Transaction::Query.transaction_with_conversation(
-          transaction_id: params[:id],
-          community_id: @current_community.id)
-      }
-      .map { |tx_with_conv| [tx_with_conv, :admin] }
-
-    transaction_conversation, role = m_participant.or_else { m_admin.or_else([]) }
-
-    tx = transaction_service.get(community_id: @current_community.id, transaction_id: params[:id])
-         .maybe()
-         .or_else(nil)
-
-    unless tx.present? && transaction_conversation.present?
-      flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
-      return redirect_to search_path
-    end
-
-    tx_model = Transaction.where(id: tx[:id]).first
     @payment = tx_model.sender_payment
   end
 
   def confirm_delivery
-    m_participant =
-      Maybe(
-        MarketplaceService::Transaction::Query.transaction_with_conversation(
-        transaction_id: params[:id],
-        person_id: @current_user.id,
-        community_id: @current_community.id))
-      .map { |tx_with_conv| [tx_with_conv, :participant] }
-
-    m_admin =
-      Maybe(@current_user.has_admin_rights?)
-      .select { |can_show| can_show }
-      .map {
-        MarketplaceService::Transaction::Query.transaction_with_conversation(
-          transaction_id: params[:id],
-          community_id: @current_community.id)
-      }
-      .map { |tx_with_conv| [tx_with_conv, :admin] }
-
-    transaction_conversation, role = m_participant.or_else { m_admin.or_else([]) }
-
-    tx = transaction_service.get(community_id: @current_community.id, transaction_id: params[:id])
-         .maybe()
-         .or_else(nil)
-
-    unless tx.present? && transaction_conversation.present?
-      flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
-      return redirect_to search_path
-    end
-
-    tx_model = Transaction.where(id: tx[:id]).first
     tx_model.confirm_delivery!
   end
 
@@ -129,16 +39,25 @@ class TransactionsController < ApplicationController
         ensure_can_start_transactions(listing_model: listing_model, current_user: @current_user, current_community: @current_community)
       }
     ).on_success { |((listing_id, listing_model, author_model, process, gateway))|
-      transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
-      process = [process].flatten.first
-      case [process[:process], gateway]
-      when matches([:none])
-        render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
-      when matches([:preauthorize, :paypal])
-        redirect_to initiate_order_path(transaction_params)
+      listing_transaction = listing_model.transaction_for(@current_user)
+      if listing_transaction.present?
+        if listing_transaction.sender_paid?
+          redirect_to sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+        else
+          redirect_to person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+        end
       else
-        opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process}, booking: #{booking}"
-        raise ArgumentError.new("Cannot find new transaction path to #{opts}")
+        transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
+        process = [process].flatten.first
+        case [process[:process], gateway]
+        when matches([:none])
+          render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
+        when matches([:preauthorize, :paypal])
+          redirect_to initiate_order_path(transaction_params)
+        else
+          opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process}, booking: #{booking}"
+          raise ArgumentError.new("Cannot find new transaction path to #{opts}")
+        end
       end
     }.on_error { |error_msg, data|
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
@@ -173,8 +92,16 @@ class TransactionsController < ApplicationController
                                       unit: listing_model.unit_type&.to_sym)
 
         process = [process].flatten.first
-        transaction_service.create(
-          {
+        listing_transaction = listing_model.transaction_for(@current_user)
+        if listing_transaction.present?
+          if listing_transaction.sender_paid?
+            session[:return_to_redirect] = sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+          else
+            session[:return_to_redirect] = person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+          end
+          Result::Success.new({transaction: listing_transaction})
+        else
+          transaction_service.create({
             transaction: {
               community_id: @current_community.id,
               community_uuid: @current_community.uuid_object,
@@ -195,12 +122,13 @@ class TransactionsController < ApplicationController
               payment_gateway: process[:process] == :none ? :none : gateway, # TODO This is a bit awkward
               payment_process: process[:process]}
           })
+        end
       }
-    ).on_success { |(_, (_, _, _, process), _, _, tx)|
+    ).on_success { |(a, (b, c, d, process), e, f, tx)|
       process = [process].flatten.first
       after_create_actions!(process: process, transaction: tx[:transaction], community_id: @current_community.id)
       flash[:notice] = after_create_flash(process: process) # add more params here when needed
-      redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
+      redirect_to session[:return_to_redirect] || after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
     }.on_error { |error_msg, data|
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
       redirect_to(session[:return_to_content] || root)
@@ -615,5 +543,42 @@ class TransactionsController < ApplicationController
 
   def transaction_process_tokens
     TransactionService::API::Api.process_tokens
+  end
+
+  def tx_model
+    if @tx_model
+      @tx_model
+    else
+      m_participant =
+        Maybe(
+          MarketplaceService::Transaction::Query.transaction_with_conversation(
+          transaction_id: params[:id],
+          person_id: @current_user.id,
+          community_id: @current_community.id))
+        .map { |tx_with_conv| [tx_with_conv, :participant] }
+
+      m_admin =
+        Maybe(@current_user.has_admin_rights?)
+        .select { |can_show| can_show }
+        .map {
+          MarketplaceService::Transaction::Query.transaction_with_conversation(
+            transaction_id: params[:id],
+            community_id: @current_community.id)
+        }
+        .map { |tx_with_conv| [tx_with_conv, :admin] }
+
+      transaction_conversation, role = m_participant.or_else { m_admin.or_else([]) }
+
+      tx = transaction_service.get(community_id: @current_community.id, transaction_id: params[:id])
+           .maybe()
+           .or_else(nil)
+
+      unless tx.present? && transaction_conversation.present?
+        flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
+        return redirect_to search_path
+      end
+
+      @tx_model = Transaction.where(id: tx[:id]).first
+    end
   end
 end

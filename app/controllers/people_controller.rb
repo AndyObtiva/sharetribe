@@ -21,7 +21,7 @@ class PeopleController < Devise::RegistrationsController
   helper_method :show_closed?
 
   def show
-    @person = Person.find_by!(username: params[:username], community_id: @current_community.id)
+    @person = Person.find_by!(username: @current_user.try(:username) || params[:username], community_id: @current_community.id)
     raise PersonDeleted if @person.deleted?
 
     redirect_to landing_page_path and return if @current_community.private? && !@current_user

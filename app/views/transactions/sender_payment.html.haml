@@ -28,7 +28,7 @@
             },
 
             payment: function() {
-              return new Promise( function(resolve, reject) { resolve($('#payment_paypal_id').text()) } );
+              return new Promise( function(resolve, reject) { resolve($('#payment_paypal_id').val()) } );
             },
 
             commit: true,

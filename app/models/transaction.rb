@@ -72,8 +72,8 @@ class Transaction < ActiveRecord::Base
   monetize :unit_price_cents, with_model_currency: :unit_price_currency
   monetize :shipping_price_cents, allow_nil: true, with_model_currency: :unit_price_currency
 
-  has_one :sender_payment, -> { order created_at: :desc }, class_name: 'SenderPayment', foreign_key: 'transaction_id'
-  has_one :traveller_payment, class_name: 'TravellerPayment', foreign_key: 'transaction_id'
+  has_one :sender_payment, -> { order created_at: :desc }, class_name: 'SenderPayment', foreign_key: 'transaction_id', dependent: :destroy
+  has_one :traveller_payment, class_name: 'TravellerPayment', foreign_key: 'transaction_id', dependent: :destroy
 
   scope :for_person, -> (person){
     joins(:listing)
@@ -201,6 +201,10 @@ class Transaction < ActiveRecord::Base
 
   def unit_type
     Maybe(read_attribute(:unit_type)).to_sym.or_else(nil)
+  end
+
+  def sender_paid?
+    sender_payment.present? && sender_payment.approved?
   end
 
   def confirm_delivery!

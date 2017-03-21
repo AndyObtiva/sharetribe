@@ -88,6 +88,7 @@ class Listing < ActiveRecord::Base
   has_and_belongs_to_many :followers, :class_name => "Person", :join_table => "listing_followers"
 
   belongs_to :category
+  has_many :transactions
 
   monetize :price_cents, :allow_nil => true, with_model_currency: :currency
   monetize :shipping_price_cents, allow_nil: true, with_model_currency: :currency
@@ -206,6 +207,28 @@ class Listing < ActiveRecord::Base
 
   def image_by_id(id)
     listing_images.find_by_id(id)
+  end
+
+  def transaction_for(payer_person)
+    transactions.find_by(starter_id: payer_person.id, community_id: community_id) if payer_person.present?
+  end
+
+  def purchased_by?(payer_person)
+    return false unless payer_person.present?
+    payer_person_transaction = transactions.find_by(starter_id: payer_person.id, community_id: community_id)
+    payer_person_transaction.present? && payer_person_transaction.sender_paid?
+  end
+
+  def purchased?
+    !!transactions.to_a.detect {|t| t.sender_paid?}
+  end
+
+  def paid_transaction
+    transactions.to_a.detect {|t| t.sender_paid?}
+  end
+
+  def payer
+    paid_transaction.try(:payer)
   end
 
   def prev_and_next_image_ids_by_id(id)
