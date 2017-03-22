@@ -207,8 +207,20 @@ class Transaction < ActiveRecord::Base
     sender_payment.present? && sender_payment.approved?
   end
 
-  def confirm_delivery!
-    # TODO capture sender payment and perform traveller payout
+  def confirm_delivery!(confirmation_number)
+    # TODO perform traveller payout
+    if confirmation_number == sender_payment.confirmation_number
+      sender_payment.capture_payment!
+      true
+    else
+      false
+    end
+  rescue => e
+    false
+  end
+
+  def confirmed_delivery?
+    sender_payment.try(:captured?)
   end
 
 end

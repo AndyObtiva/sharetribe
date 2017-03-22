@@ -1,0 +1,16 @@
+- content_for :title_header do
+  %h1 Delivery Confirmation
+
+.centered-section
+  %h1
+    Delivery has been confirmed.
+
+  %p
+    The amount below has been deducted from Sender and paid to Traveller successfully. Thanks for using Anapog. Come again!
+
+  = render 'transactions/sender_payment_details', payment: transaction.sender_payment
+  = link_to 'Print', "javascript: window.print()"
+  |
+  = link_to 'Listing', transaction.listing
+  |
+  = link_to 'Home', '/'

@@ -1,0 +1,25 @@
+- content_for :title_header do
+  %h1 Delivery Confirmation
+
+.centered-section
+  By clicking confirm, you certify that the item being shipped has been delivered.
+  = form_for([person, transaction, delivery_confirmation], url: person_transaction_delivery_confirmation_path(person, transaction)) do |f|
+    - if delivery_confirmation.errors.any?
+      #error_explanation
+        %h2
+          = pluralize(delivery_confirmation.errors.count, "error")
+          prohibited this transaction from being confirmed:
+
+        %ul
+          - delivery_confirmation.errors.full_messages.each do |message|
+            %li
+              = message
+
+    .field
+      = f.label :confirmation_number
+      = f.text_field :confirmation_number
+
+    %br
+
+    .actions
+      = f.submit t('delivery_confirmations.confirm')

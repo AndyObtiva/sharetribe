@@ -11,7 +11,7 @@ class ListingVisibilityGuard
   end
 
   def visible?
-     authorized_to_view? && (open? || is_author? || is_payer?)
+     authorized_to_view? && (open? || is_author? || is_payer? || is_recipient?)
   end
 
   def authorized_to_view?
@@ -52,5 +52,9 @@ class ListingVisibilityGuard
 
   def is_payer?
     @listing.purchased_by?(@user)
+  end
+
+  def is_recipient?
+    @user.present? && @user.emails.pluck(:address).include?(@listing.paid_transaction.sender_payment.recipient_email)
   end
 end

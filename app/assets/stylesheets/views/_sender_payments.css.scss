@@ -2,9 +2,29 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-@media only print {
+.person_info {
+  float: left;
+  width: 50%;
+  margin-bottom: 10px;
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+}
+
+.recipient_email {
+  clear: both;
+}
+
+@media print {
+  html {
     body {
-        header.header {display: none;}
-        .actions {display: none;}
+      header.header {
+        display: none;
+      }
+      .actions {
+        display: none;
+      }
     }
+  }
 }

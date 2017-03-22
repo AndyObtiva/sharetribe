@@ -1,19 +1,37 @@
+- @payment ||= payment
 %p
   %strong Confirmation Number:
-  #payment_confirmation_number= @payment.confirmation_number 
+  #payment_confirmation_number= @payment.confirmation_number
   %input(id="payment_paypal_id" type="hidden" value="#{@payment.paypal_id}")
   %input(id="payment_id" type="hidden" value="#{@payment.id}")
-  %input(id="payment_receipt_url" type="hidden" value="#{sender_payment_receipt_person_transaction_path(transaction_id: params[:id], person_id: params[:person_id])}")
+  %input(id="payment_receipt_url" type="hidden" value="#{sender_payment_receipt_person_transaction_path(id: params[:id] || transaction.id, person_id: params[:person_id] || person.id)}")
   %input(id="paypal_client_id" type="hidden" value="#{PAYPAL_CONFIG.client_id}")
   %input(id="paypal_mode" type="hidden" value="#{PAYPAL_CONFIG.mode}")
 
-  %small
-    Confirmation number above is emailed to recipient with a confirmation link.
-    Upon item receipt, recipient must click on confirmation link or provide confirmation number to traveller.
+  - unless @payment.captured?
+    %small
+      Confirmation number above is emailed to recipient with a confirmation link.
+      Upon item receipt, recipient must click on confirmation link or provide confirmation number to traveller.
 
-%p
+.person_info
+  %p
+    %strong Sender Info:
+  %ul
+    %li= @payment.listing_transaction.sender.full_name
+    %li= link_to @payment.listing_transaction.sender.confirmed_notification_email_addresses.last, "mailto:#{@payment.listing_transaction.sender.confirmed_notification_email_addresses.last}"
+    %li= link_to @payment.listing_transaction.sender.phone_number, "tel:#{@payment.listing_transaction.sender.phone_number}" if @payment.listing_transaction.sender.phone_number
+
+.person_info
+  %p
+    %strong Traveller Info:
+  %ul
+    %li= @payment.listing_transaction.traveller.full_name
+    %li= link_to @payment.listing_transaction.traveller.confirmed_notification_email_addresses.last, "mailto:#{@payment.listing_transaction.traveller.confirmed_notification_email_addresses.last}"
+    %li= link_to @payment.listing_transaction.traveller.phone_number, "tel:#{@payment.listing_transaction.traveller.phone_number}" if @payment.listing_transaction.traveller.phone_number
+
+%p.recipient_email
   %strong Recipient Email:
-  = @payment.recipient_email
+  = link_to @payment.recipient_email, "mailto:#{@payment.recipient_email}"
 
 %input(id="payment_id" type="hidden" value="#{@payment.id}")
 
@@ -25,7 +43,7 @@
       %th Price
   %tbody
     %tr
-      %td= link_to @payment.data['transactions'][0]['description'], @payment.listing
+      %td= link_to @payment.data['transactions'][0]['description'], @payment.listing, target: '_blank'
       %td= @payment.data['transactions'][0]['item_list']['items'][0]['quantity']
       %td
         = @payment.listing.price_symbol
@@ -49,7 +67,8 @@
 %p
   = @payment.listing.destination_loc.address
 
-%p
-  %strong NOTE:
-  Payment amount has only been frozen in payer account.
-  It will be deducted once recipient confirms receipt of item from traveller.
+- unless @payment.captured?
+  %p
+    %strong NOTE:
+    Payment amount is only frozen in payer account until delivery is confirmed.
+    In which case, it will be deducted from payer account.

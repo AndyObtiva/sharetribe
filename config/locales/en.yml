@@ -757,11 +757,15 @@ en:
       create_own: "Want to create your own online marketplace website like %{service_name}? %{learn_more}."
       learn_more: "Learn more"
     confirm_delivery:
-      subject_for_confirm_delivery: 'You are receiving an item soon! Please confirm once delivered!'
-      delivery_coming_soon: 'You are receiving an item (%{title}) on %{date} from %{sender} via %{traveller}. Please confirm once delivered!'
-      confirm_once_delivered: 'Once traveller delivers item, please confirm by clicking on this link: <br><br>%{confirm_link}'
-      alternatively_provide_traveller_confirmation_number: 'Alternatively, please provide traveller with following confirmation number to obtain delivery: <br><br>%{confirmation_number}'
-      confirm: 'Confirm Receiving Delivery'
+      subject_for_confirm_delivery_traveller: 'You are sending an item soon! Please confirm once delivered!'
+      subject_for_confirm_delivery_recipient: 'You are receiving an item soon! Please confirm once delivered!'
+      delivery_coming_soon_traveller: 'You are sending an item (%{title}) by %{date} obtained from %{sender} to deliver to %{recipient}.'
+      delivery_coming_soon_recipient: 'You are receiving an item (%{title}) by %{date} from %{sender} via %{traveller}.'
+      confirm_once_delivered_traveller: 'In order to get paid, you must confirm delivery once done by obtaining confirmation number from recipient and submitting via this link: <br><br>%{confirm_link}'
+      confirm_once_delivered_recipient: 'Please confirm once delivery is done by clicking on this link: <br><br>%{confirm_link}'
+      provide_confirmation_number_traveller: 'Alternatively, please have recipient click on their confirmation link (that would get you paid too).'
+      provide_confirmation_number_recipient: 'Alternatively, please provide traveller with the following confirmation number after delivery: <br><br>%{confirmation_number}'
+      confirm: 'Confirm Delivery'
     confirm_reminder:
       you_have_not_yet_confirmed_or_canceled_request: "You have not yet confirmed or canceled the order %{request_link}. If the order has been completed, you should confirm that. After that you can give feedback to %{other_party_given_name}."
       remember_to_confirm_request: "Remember to confirm or cancel a request"
@@ -2044,6 +2048,8 @@ en:
       days:
         one: "%{count} day"
         other: "%{count} days"
+  delivery_confirmations:
+    confirm: "Confirm"
   sender_payments:
     continue_to_pay: "Continue To Pay"
   transactions:

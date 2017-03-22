@@ -135,7 +135,7 @@ class Person < ActiveRecord::Base
     "email_about_completed_transactions",
     "email_about_new_payments",
     "email_about_new_listings_by_followed_people"
-
+#TODO add email about confirmation of delivery
     # These should not yet be shown in UI, although they might be stored in DB
     # "email_when_new_friend_request",
     # "email_when_new_feedback_on_transaction",
@@ -584,6 +584,7 @@ class Person < ActiveRecord::Base
       end
       Person.create!(password: password, username: username, community_id: community.id, locale: 'en').tap do |p|
         p.emails.create!(address: email, community_id: community.id)
+        p.communities << community
       end
     end
   end

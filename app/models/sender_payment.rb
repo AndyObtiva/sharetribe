@@ -15,6 +15,7 @@
 #  recipient_phone :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  capture_id      :integer
 #
 # Indexes
 #
@@ -55,26 +56,36 @@ class SenderPayment < Payment
     paypal_id && paypal_id.sub('PAY-', '')
   end
 
-  def capture_payment
-    #TODO implement and perhaps add a capture intent enum value (to be called by Transaction#confirm_payment!)
+  #TODO transactionability support
+  #TODO send email to confirm capture for sender
+  def capture_payment!
+    return if captured?
+    capture = paypal_authorization.capture({:amount => paypal_amount, :is_final_capture => true})
+    if capture.success?
+      self.update_attribute(:capture_id, capture.id)
+    else
+      raise "Capture for #{paypal_id} failed!"
+    end
+  rescue => err
+    Rails.logger.error err.message
+    Rails.logger.error err.backtrace.join
+    raise err
+  end
 
-    # begin
-    #   @authorization = PayPal::SDK::REST::Authorization.find("84H59271K1950474X")
-    #   @capture = @authorization.capture({
-    #     :amount => {
-    #       :currency => "USD",
-    #       :total => "1.00" },
-    #     :is_final_capture => true })
-    #
-    #   if @capture.success? # Return true or false
-    #     logger.info "Capture[#{@capture.id}]"
-    #   else
-    #     logger.error @capture.error.inspect
-    #   end
-    # rescue ResourceNotFound => err
-    #   # It will throw ResourceNotFound exception if the payment not found
-    #   logger.error "Authorization Not Found"
-    # end
+  def captured?
+    self.capture_id.present?
+  end
+
+  def paypal_payment
+    @paypal_payment = PayPal::SDK::REST::Payment.find(self.paypal_id)
+  end
+
+  def paypal_authorization
+    paypal_payment.transactions[0].related_resources[0].authorization
+  end
+
+  def paypal_amount
+    data['transactions'][0]['related_resources'][0]['authorization']['amount']
   end
 
   private
@@ -127,6 +138,7 @@ class SenderPayment < Payment
       self.data = @paypal_payment.to_hash
       recipient = Person.autocreate_for(recipient_email, listing_transaction.community)
       PersonMailer.delay.confirm_delivery(recipient, self)
+      PersonMailer.delay.confirm_delivery(listing_transaction.traveller, self)
       listing.update_attribute(:open, false)
     else
       self.error = @paypal_payment.error  # Error Hash

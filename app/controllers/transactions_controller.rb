@@ -26,10 +26,6 @@ class TransactionsController < ApplicationController
     @payment = tx_model.sender_payment
   end
 
-  def confirm_delivery
-    tx_model.confirm_delivery!
-  end
-
   def new
     Result.all(
       ->() {

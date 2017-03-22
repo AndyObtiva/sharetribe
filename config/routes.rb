@@ -437,10 +437,10 @@ Kassi::Application.routes.draw do
         end
         resources :transactions, only: [:show, :new, :create] do
           resources :sender_payments
+          resource :delivery_confirmation
           member do
             get :sender_payment
             get :sender_payment_receipt
-            get :confirm_delivery
           end
         end
         resource :settings do
