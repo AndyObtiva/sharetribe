@@ -16,6 +16,7 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  capture_id      :integer
+#  payout_batch    :text(65535)
 #
 # Indexes
 #

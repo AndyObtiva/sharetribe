@@ -1175,6 +1175,7 @@ CREATE TABLE `payments` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `capture_id` int(11) DEFAULT NULL,
+  `payout_batch` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `index_payments_on_created_at` (`created_at`) USING BTREE,
   KEY `index_payments_on_paypal_id` (`paypal_id`) USING BTREE,
@@ -1627,7 +1628,7 @@ CREATE TABLE `transactions` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-22  9:25:55
+-- Dump completed on 2017-03-22 11:01:06
 INSERT INTO schema_migrations (version) VALUES ('20080806070738');
 
 INSERT INTO schema_migrations (version) VALUES ('20080807071903');
@@ -3223,4 +3224,6 @@ INSERT INTO schema_migrations (version) VALUES ('20161023074355');
 INSERT INTO schema_migrations (version) VALUES ('20170307131831');
 
 INSERT INTO schema_migrations (version) VALUES ('20170322052540');
+
+INSERT INTO schema_migrations (version) VALUES ('20170322065856');
 

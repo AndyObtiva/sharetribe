@@ -152,7 +152,7 @@ class PersonMailer < ActionMailer::Base
     subject_suffix = @recipient == @transaction.traveller ? '_traveller' : '_recipient'
     with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
       template = "confirm_delivery"
-      premailer_mail(:to => recipient_email,
+      premailer_mail(:to => recipient_email, #TODO fix so that it sends to traveller email if recipient is traveller
                      :from => community_specific_sender(community),
                      :subject => t("emails.confirm_delivery.subject_for_confirm_delivery#{subject_suffix}")) do |format|
         format.html {

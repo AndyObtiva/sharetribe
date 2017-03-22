@@ -16,6 +16,7 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  capture_id      :integer
+#  payout_batch    :text(65535)
 #
 # Indexes
 #
@@ -38,6 +39,7 @@ class Payment < ActiveRecord::Base
 
   serialize :data, JSON
   serialize :error, JSON
+  serialize :payout_batch, JSON
 
   belongs_to :listing_transaction, class_name: 'Transaction', foreign_key: 'transaction_id'
   delegate :listing, to: :listing_transaction

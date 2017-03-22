@@ -208,7 +208,6 @@ class Transaction < ActiveRecord::Base
   end
 
   def confirm_delivery!(confirmation_number)
-    # TODO perform traveller payout
     if confirmation_number == sender_payment.confirmation_number
       sender_payment.capture_payment!
       true

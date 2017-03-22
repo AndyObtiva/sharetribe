@@ -16,6 +16,7 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  capture_id      :integer
+#  payout_batch    :text(65535)
 #
 # Indexes
 #
@@ -52,28 +53,39 @@ class SenderPayment < Payment
     Person.joins(:emails).where(emails: {address: recipient_email, community_id: community.id}, community_id: community.id).first
   end
 
+  def traveller
+    listing_transaction.traveller
+  end
+
   def confirmation_number
     paypal_id && paypal_id.sub('PAY-', '')
   end
 
   #TODO transactionability support
+  #TODO payout errors (report) and roll back transaction to be continued later
   #TODO send email to confirm capture for sender
   def capture_payment!
     return if captured?
     capture = paypal_authorization.capture({:amount => paypal_amount, :is_final_capture => true})
     if capture.success?
       self.update_attribute(:capture_id, capture.id)
+      payout_traveller!
     else
       raise "Capture for #{paypal_id} failed!"
     end
   rescue => err
     Rails.logger.error err.message
-    Rails.logger.error err.backtrace.join
+    Rails.logger.error err.backtrace.join("\n")
     raise err
   end
 
   def captured?
     self.capture_id.present?
+  end
+
+  #TODO payout errors (report)
+  def paid_out?
+    self.payout_batch.present?
   end
 
   def paypal_payment
@@ -146,5 +158,32 @@ class SenderPayment < Payment
     end
   end
 
+  def payout_traveller!
+    payout_attributes = {
+      :sender_batch_header => {
+          :sender_batch_id => SecureRandom.hex(8),
+          :email_subject => 'You have an Anapog delivery payout!'
+      },
+      :items => [
+          {
+              :recipient_type => 'EMAIL',
+              :amount => {
+                  :value => listing.price.to_f.to_s,
+                  :currency => listing.price.currency.iso_code
+              },
+              :note => 'Thanks for shipping items with Anapog!',
+              :sender_item_id => listing.id.to_s,
+              :receiver => traveller.confirmed_notification_email_addresses.last
+          }
+      ]
+    }
+
+    @paypal_payout = PayPal::SDK::REST::Payout.new(payout_attributes)
+    self.update_attribute(:payout_batch, @paypal_payout.create(true))
+  rescue => e
+    Rails.logger.error e.message
+    Rails.logger.error e.backtrace.join("\n")
+    raise e
+  end
 
 end
