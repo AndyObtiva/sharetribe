@@ -27,38 +27,39 @@ class TransactionsController < ApplicationController
   end
 
   def new
-    Result.all(
-      ->() {
-        fetch_data(params[:listing_id])
-      },
-      ->((listing_id, listing_model)) {
-        ensure_can_start_transactions(listing_model: listing_model, current_user: @current_user, current_community: @current_community)
-      }
-    ).on_success { |((listing_id, listing_model, author_model, process, gateway))|
-      listing_transaction = listing_model.transaction_for(@current_user)
-      if listing_transaction.present?
-        if listing_transaction.sender_paid?
-          redirect_to sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
-        else
-          redirect_to person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
-        end
-      else
-        transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
-        process = [process].flatten.first
-        case [process[:process], gateway]
-        when matches([:none])
-          render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
-        when matches([:preauthorize, :paypal])
-          redirect_to initiate_order_path(transaction_params)
-        else
-          opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process}, booking: #{booking}"
-          raise ArgumentError.new("Cannot find new transaction path to #{opts}")
-        end
-      end
-    }.on_error { |error_msg, data|
-      flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
-      redirect_to(session[:return_to_content] || root)
-    }
+    create
+    # Result.all(
+    #   ->() {
+    #     fetch_data(params[:listing_id])
+    #   },
+    #   ->((listing_id, listing_model)) {
+    #     ensure_can_start_transactions(listing_model: listing_model, current_user: @current_user, current_community: @current_community)
+    #   }
+    # ).on_success { |((listing_id, listing_model, author_model, process, gateway))|
+    #   listing_transaction = listing_model.transaction_for(@current_user)
+    #   if listing_transaction.present?
+    #     if listing_transaction.sender_paid?
+    #       redirect_to sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+    #     else
+    #       redirect_to person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+    #     end
+    #   else
+    #     transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
+    #     process = [process].flatten.first
+    #     case [process[:process], gateway]
+    #     when matches([:none])
+    #       render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
+    #     when matches([:preauthorize, :paypal])
+    #       redirect_to initiate_order_path(transaction_params)
+    #     else
+    #       opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process}, booking: #{booking}"
+    #       raise ArgumentError.new("Cannot find new transaction path to #{opts}")
+    #     end
+    #   end
+    # }.on_error { |error_msg, data|
+    #   flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
+    #   redirect_to(session[:return_to_content] || root)
+    # }
   end
 
   def create
@@ -93,7 +94,7 @@ class TransactionsController < ApplicationController
           if listing_transaction.sender_paid?
             session[:return_to_redirect] = sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
           else
-            session[:return_to_redirect] = person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)
+            session[:return_to_redirect] = person_transaction_path(id: listing_transaction.id, person_id: @current_user.id, accept_offer: params[:accept_offer])
           end
           Result::Success.new({transaction: listing_transaction})
         else
@@ -132,6 +133,9 @@ class TransactionsController < ApplicationController
   end
 
   def show
+    if params[:accept_offer].to_s.downcase == 'true'
+      redirect_to new_person_transaction_sender_payment_path(transaction_id: params[:id], person_id: params[:person_id]) and return
+    end
     m_participant =
       Maybe(
         MarketplaceService::Transaction::Query.transaction_with_conversation(

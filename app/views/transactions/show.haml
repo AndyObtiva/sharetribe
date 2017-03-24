@@ -2,5 +2,16 @@
 
 .centered-section-wide
   = render :partial => "transactions/details", locals: {role: role, tx: transaction, transaction_model: transaction_model, listing: listing, is_author: is_author, price_break_down_locals: price_break_down_locals}
-
   = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages}
+
+  - if messages.present?
+    .message-avatar-padding
+      .row
+        .col-12
+          - if transaction_model.sender_paid?
+            Purchased.
+            = form_tag sender_payment_receipt_person_transaction_path(id: params[:id], person_id: params[:person_id]), method: 'get' do
+              = button_tag t("transactions.payment_receipt")
+          - else
+            = form_tag new_person_transaction_sender_payment_path(transaction_id: params[:id], person_id: params[:person_id]), method: 'get' do
+              = button_tag t("conversations.status_link.accept_offer")

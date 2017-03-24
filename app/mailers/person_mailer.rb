@@ -138,16 +138,17 @@ class PersonMailer < ActionMailer::Base
     @transaction = sender_payment.listing_transaction
     @listing = sender_payment.listing
     @sender = sender_payment.sender
-    @sender_name = "#{@sender.full_name} <#{@sender.confirmed_notification_email_addresses.last}> (#{@sender.phone_number})"
+    @sender_name = "#{@sender.full_name}"
     @traveller = @transaction.traveller
-    @traveller_name = "#{@traveller.full_name} <#{@traveller.confirmed_notification_email_addresses.last}> (#{@traveller.phone_number})"
-    @recipient_name = "#{@recipient.full_name} <#{@recipient.confirmed_notification_email_addresses.last}> (#{@recipient.phone_number})"
+    @traveller_name = "#{@traveller.full_name}"
+    @recipient_name = "#{@recipient.full_name}"
     community = @transaction.community
     confirm_url_args = {person_id: @recipient, transaction_id: @transaction, host: community.full_domain} #TODO set protocol to HTTPS
     confirm_url_args.merge!(confirmation_number: @sender_payment.confirmation_number) unless @recipient == @transaction.traveller
     @confirm_url = new_person_transaction_delivery_confirmation_url(confirm_url_args)
     @confirm_link = "<a href='#{@confirm_url}'>#{@confirm_url}</a>".html_safe
-    recipient_email = sender_payment.recipient_email
+    recipient_email = recipient.confirmed_notification_email_to
+    recipient_email ||= sender_payment.recipient_email if recipient.emails.map(&:address).include?(sender_payment.recipient_email)
     set_up_layout_variables(recipient, community, @email_type)
     subject_suffix = @recipient == @transaction.traveller ? '_traveller' : '_recipient'
     with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
@@ -157,6 +158,7 @@ class PersonMailer < ActionMailer::Base
                      :subject => t("emails.confirm_delivery.subject_for_confirm_delivery#{subject_suffix}")) do |format|
         format.html {
           render template
+          Rails.logger.debug render_to_string(template)
         }
       end
     end

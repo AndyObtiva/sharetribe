@@ -70,6 +70,8 @@ Kassi::Application.configure do
       :authentication       => 'plain',
       :enable_starttls_auto => true
     }
+  else
+    ActionMailer::Base.delivery_method = APP_CONFIG.mail_delivery_method
   end
 
 

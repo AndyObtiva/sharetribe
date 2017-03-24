@@ -438,6 +438,8 @@ development:
 
   use_js_routes_middleware: true
 
+  mail_delivery_method: :letter_opener
+
 test:
   <<: *default_settings
   # The locale should be "en" for test environment

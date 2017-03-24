@@ -84,7 +84,7 @@ gem "premailer", "~> 1.8.2"
 gem 'stringex', '~> 2.5.2'
 gem 'paypal-sdk-permissions', '~> 1.96.4'
 gem 'paypal-sdk-merchant', '~> 1.116.0'
-gem 'paypal-sdk-rest'
+gem 'paypal-sdk-rest', '~> 1.6.0'
 gem 'airbrake', '~> 4.1.0'
 gem 'librato-rails', "~> 0.11.1"
 
@@ -165,6 +165,7 @@ group :development do
   gem 'quiet_assets', "~> 1.1.0"
   gem 'better_errors', "~> 2.1.1"
   gem 'web-console', '~> 2.0'
+  gem 'letter_opener', '~> 1.4.1'
 end
 
 group :test do

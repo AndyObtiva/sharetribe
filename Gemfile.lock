@@ -266,6 +266,8 @@ GEM
     kgio (2.9.3)
     launchy (2.4.3)
       addressable (~> 2.3)
+    letter_opener (1.4.1)
+      launchy (~> 2.2)
     librato-metrics (1.6.1)
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
@@ -596,6 +598,7 @@ DEPENDENCIES
   jwt (~> 1.5.2)
   kgio (~> 2.9.2)
   launchy (~> 2.4, >= 2.4.3)
+  letter_opener (~> 1.4.1)
   librato-rails (~> 0.11.1)
   lograge (~> 0.3.2)
   mail_view (~> 1.0.3)
@@ -611,7 +614,7 @@ DEPENDENCIES
   passenger (~> 5.0.30)
   paypal-sdk-merchant (~> 1.116.0)
   paypal-sdk-permissions (~> 1.96.4)
-  paypal-sdk-rest
+  paypal-sdk-rest (~> 1.6.0)
   phony_rails
   possibly (~> 0.2.0)
   premailer (~> 1.8.2)
