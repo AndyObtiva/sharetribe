@@ -328,7 +328,7 @@ class TransactionsController < ApplicationController
 
   def ensure_can_start_transactions(listing_model:, current_user:, current_community:)
     error =
-      if listing_model.closed?
+      if listing_model.closed? && current_user != listing_model.payer && current_user != listing_model.author
         "layouts.notifications.you_cannot_reply_to_a_closed_offer"
       elsif listing_model.author == current_user
        "layouts.notifications.you_cannot_send_message_to_yourself"

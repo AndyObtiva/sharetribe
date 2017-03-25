@@ -92,7 +92,7 @@ class FreeTransactionsController < ApplicationController
   end
 
   def ensure_listing_is_open
-    if @listing.closed?
+    if @listing.closed? && current_user != @listing.payer && current_user != @listing.author
       flash[:error] = t("layouts.notifications.you_cannot_reply_to_a_closed_offer")
       redirect_to (session[:return_to_content] || search_path)
     end

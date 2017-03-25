@@ -3,6 +3,16 @@
 - is_authorized = is_author || is_marketplace_admin
 
 - if @listing.closed?
+  - listing_transaction = @listing.transaction_for(@current_user)
+  - if listing_transaction.present? && listing_transaction.sender_paid?
+    %a{href: person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)}
+      %button.enabled-book-button
+        .content
+          = action_button_label(@listing)
+    %a{href: sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)}
+      %button.enabled-book-button
+        .content
+          = t("transactions.payment_receipt")
   .listing-view-admin-links
     .listing-view-admin-link
       .icon-with-text-container
@@ -153,6 +163,12 @@
           .content
             = action_button_label(@listing)
 
+    - if @current_user.present? && @listing.author != @current_user
+      %a{href: new_person_transaction_path(person_id: @current_user.id, listing_id: params[:id], accept_offer: 'true')}
+        %button.enabled-book-button
+          .content
+            = t("conversations.status_link.accept_offer")
+
       - blocked_dates_result.on_error do
         %button.disabled-book-button{disabled: true}
           .content
@@ -163,19 +179,8 @@
         .col-12
           = render :partial => "listing_conversations/paypal_payment_methods", locals: { country_code: country_code }
 
-  - if is_authorized
-    .listing-view-admin-links
-      - listing_transaction = @listing.transaction_for(@current_user)
-      - if listing_transaction.present? && listing_transaction.sender_paid?
-        .listing-view-admin-link
-          %a.icon-with-text-container{href: sender_payment_receipt_person_transaction_path(id: listing_transaction.id, person_id: @current_user.id)}
-            = icon_tag("edit", ["icon-part"])
-            .text-part= t("transactions.payment_receipt")
-      - elsif @listing.author != @current_user
-        .listing-view-admin-link
-          %a.icon-with-text-container{href: new_person_transaction_path(person_id: @current_user.id, listing_id: params[:id], accept_offer: 'true')}
-            = icon_tag("edit", ["icon-part"])
-            .text-part= t("conversations.status_link.accept_offer")
+  .listing-view-admin-links
+    - if is_authorized
       .listing-view-admin-link
         %a.icon-with-text-container{href: edit_listing_path(@listing)}
           = icon_tag("edit", ["icon-part"])
