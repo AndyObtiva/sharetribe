@@ -355,7 +355,7 @@ class TransactionsController < ApplicationController
   def after_create_redirect(process:, starter_id:, transaction:)
     case process[:process]
     when :none
-      person_transaction_path(person_id: starter_id, id: transaction[:id])
+      person_transaction_path(person_id: starter_id, id: transaction[:id], accept_offer: params[:accept_offer])
     else
       raise NotImplementedError.new("Not implemented for process #{process}")
     end
