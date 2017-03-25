@@ -15,19 +15,19 @@
 
 .person_info
   %p
-    %strong Sender Info:
+    %strong Sender:
   %ul
     %li= @payment.listing_transaction.sender.full_name
-    %li= link_to @payment.listing_transaction.sender.confirmed_notification_email_addresses.last, "mailto:#{@payment.listing_transaction.sender.confirmed_notification_email_addresses.last}"
-    %li= link_to @payment.listing_transaction.sender.phone_number, "tel:#{@payment.listing_transaction.sender.phone_number}" if @payment.listing_transaction.sender.phone_number
+    =# link_to @payment.listing_transaction.sender.confirmed_notification_email_addresses.last, "mailto:#{@payment.listing_transaction.sender.confirmed_notification_email_addresses.last}"
+    =# link_to @payment.listing_transaction.sender.phone_number, "tel:#{@payment.listing_transaction.sender.phone_number}" if @payment.listing_transaction.sender.phone_number
 
 .person_info
   %p
-    %strong Traveller Info:
+    %strong Traveller:
   %ul
     %li= @payment.listing_transaction.traveller.full_name
-    %li= link_to @payment.listing_transaction.traveller.confirmed_notification_email_addresses.last, "mailto:#{@payment.listing_transaction.traveller.confirmed_notification_email_addresses.last}"
-    %li= link_to @payment.listing_transaction.traveller.phone_number, "tel:#{@payment.listing_transaction.traveller.phone_number}" if @payment.listing_transaction.traveller.phone_number
+    =# link_to @payment.listing_transaction.traveller.confirmed_notification_email_addresses.last, "mailto:#{@payment.listing_transaction.traveller.confirmed_notification_email_addresses.last}"
+    =# link_to @payment.listing_transaction.traveller.phone_number, "tel:#{@payment.listing_transaction.traveller.phone_number}" if @payment.listing_transaction.traveller.phone_number
 
 %p.recipient_email
   %strong Recipient Email:

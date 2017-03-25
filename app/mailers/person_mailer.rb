@@ -143,7 +143,7 @@ class PersonMailer < ActionMailer::Base
     @traveller_name = "#{@traveller.full_name}"
     @recipient_name = "#{@recipient.full_name}"
     community = @transaction.community
-    confirm_url_args = {person_id: @recipient, transaction_id: @transaction, host: community.full_domain} #TODO set protocol to HTTPS
+    confirm_url_args = {person_id: @recipient, transaction_id: @transaction, host: community.full_domain, protocol: 'https'}
     confirm_url_args.merge!(confirmation_number: @sender_payment.confirmation_number) unless @recipient == @transaction.traveller
     @confirm_url = new_person_transaction_delivery_confirmation_url(confirm_url_args)
     @confirm_link = "<a href='#{@confirm_url}'>#{@confirm_url}</a>".html_safe
@@ -153,12 +153,12 @@ class PersonMailer < ActionMailer::Base
     subject_suffix = @recipient == @transaction.traveller ? '_traveller' : '_recipient'
     with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
       template = "confirm_delivery"
-      premailer_mail(:to => recipient_email, #TODO fix so that it sends to traveller email if recipient is traveller
+      premailer_mail(:to => recipient_email,
                      :from => community_specific_sender(community),
                      :subject => t("emails.confirm_delivery.subject_for_confirm_delivery#{subject_suffix}")) do |format|
         format.html {
+          Rails.logger.debug(render_to_string(template)) if Rails.logger.level == 0
           render template
-          Rails.logger.debug render_to_string(template)
         }
       end
     end
