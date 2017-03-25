@@ -757,9 +757,9 @@ en:
       create_own: "Want to create your own online marketplace website like %{service_name}? %{learn_more}."
       learn_more: "Learn more"
     confirm_delivery:
-      subject_for_confirm_delivery_traveller: 'You are sending an item soon! Please confirm once delivered!'
+      subject_for_confirm_delivery_traveller: 'You are carrying an item soon! Please confirm once delivered!'
       subject_for_confirm_delivery_recipient: 'You are receiving an item soon! Please confirm once delivered!'
-      delivery_coming_soon_traveller: 'You are sending an item (%{title}) by %{date} obtained from %{sender} to deliver to %{recipient}.'
+      delivery_coming_soon_traveller: 'You are carrying an item (%{title}) by %{date} for %{sender} to deliver to %{recipient}.'
       delivery_coming_soon_recipient: 'You are receiving an item (%{title}) by %{date} from %{sender} via %{traveller}.'
       confirm_once_delivered_traveller: 'In order to get paid, you must confirm delivery once done by obtaining confirmation number from recipient and submitting via this link: <br><br>%{confirm_link}'
       confirm_once_delivered_recipient: 'Please confirm once delivery is done by clicking on this link: <br><br>%{confirm_link}'
