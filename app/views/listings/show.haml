@@ -20,6 +20,8 @@
 
 - content_for :title_header do
   %h1
+    %small
+      = back_to_search_results_link
     %span#listing-title.listing-title= @listing.title
 
 %script{type: "text/template", class: "template", id: "image-frame-template"}

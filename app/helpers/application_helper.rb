@@ -196,6 +196,18 @@ module ApplicationHelper
       t("people.new.email_is_in_use")
     end
   end
+
+  def back_to_search_results_link
+    http_referer = request.env['HTTP_REFERER']
+    if http_referer == request.url
+      ''
+    elsif http_referer.include?('/s?')
+      link_to '<< Back To Search Results', http_referer
+    else
+      link_to '<< Back', http_referer
+    end
+  end
+
   # Class methods to access the service_name stored in the thread to work with I18N and DelayedJob etc async stuff.
   def self.store_community_service_name_to_thread(name)
     Thread.current[:current_community_service_name] = name

@@ -18,7 +18,11 @@ class SenderPaymentsController < ApplicationController
 
   # GET /payments/new
   def new
-    @payment = SenderPayment.new
+    if @transaction.sender_payment.present?
+      redirect_to sender_payment_person_transaction_path(person_id: params[:person_id], id: params[:transaction_id])
+    else
+      @payment = SenderPayment.new
+    end
   end
 
   # GET /payments/1/edit

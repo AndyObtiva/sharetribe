@@ -2,33 +2,36 @@
 #
 # Table name: payments
 #
-#  id              :integer          not null, primary key
-#  paypal_id       :string(255)
-#  payer_id        :string(255)
-#  type            :string(255)
-#  intent          :integer
-#  state           :integer
-#  transaction_id  :integer
-#  data            :text(65535)
-#  error           :text(65535)
-#  recipient_email :string(255)
-#  recipient_phone :string(255)
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  capture_id      :integer
-#  payout_batch    :text(65535)
+#  id                  :integer          not null, primary key
+#  paypal_id           :string(255)
+#  payer_id            :string(255)
+#  type                :string(255)
+#  intent              :integer
+#  state               :integer
+#  transaction_id      :integer
+#  data                :text(65535)
+#  error               :text(65535)
+#  recipient_email     :string(255)
+#  recipient_phone     :string(255)
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  capture_id          :integer
+#  payout_batch        :text(65535)
+#  confirmation_number :string(255)
 #
 # Indexes
 #
-#  index_payments_on_created_at      (created_at)
-#  index_payments_on_payer_id        (payer_id)
-#  index_payments_on_paypal_id       (paypal_id)
-#  index_payments_on_transaction_id  (transaction_id)
+#  index_payments_on_confirmation_number  (confirmation_number)
+#  index_payments_on_created_at           (created_at)
+#  index_payments_on_payer_id             (payer_id)
+#  index_payments_on_paypal_id            (paypal_id)
+#  index_payments_on_transaction_id       (transaction_id)
 #
 
 require 'paypal-sdk-rest'
 
 class SenderPayment < Payment
+  CONFIRMATION_NUMBER_CHARS = (0..9).to_a.map(&:to_s) + (65..90).to_a.map(&:chr)
   delegate :sender, to: :listing_transaction
   delegate :payer, to: :listing_transaction
 
@@ -43,6 +46,7 @@ class SenderPayment < Payment
 
   attr_accessor :return_url, :cancel_url
 
+  after_create :generate_confirmation_number! #relies on id having value
 
   def owner
     sender
@@ -55,10 +59,6 @@ class SenderPayment < Payment
 
   def traveller
     listing_transaction.traveller
-  end
-
-  def confirmation_number
-    paypal_id && paypal_id.sub('PAY-', '')
   end
 
   #TODO transactionability support
@@ -184,6 +184,11 @@ class SenderPayment < Payment
     Rails.logger.error e.message
     Rails.logger.error e.backtrace.join("\n")
     raise e
+  end
+
+  def generate_confirmation_number!
+    # NOTE: assumes a sequential primary key id numbering mechanism. Ensures confirmation number uniqueness.
+    self.update_attribute(:confirmation_number, CONFIRMATION_NUMBER_CHARS.sample(6, random: Random.new(id-1)).join)
   end
 
 end
