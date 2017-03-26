@@ -235,3 +235,6 @@ module Kassi
 
   end
 end
+
+require Rails.root.join('app', 'models', 'payment') #ensure pre-initialization of its constants by loading intentionally
+require Rails.root.join('app', 'models', 'sender_payment') #ensure pre-initialization of its constants by loading intentionally

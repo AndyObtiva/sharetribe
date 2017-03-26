@@ -31,7 +31,9 @@
 require 'paypal-sdk-rest'
 
 class SenderPayment < Payment
+  CONFIRMATION_NUMBER_CHAR_COUNT = 5
   CONFIRMATION_NUMBER_CHARS = (0..9).to_a.map(&:to_s) + (65..90).to_a.map(&:chr)
+  CONFIRMATION_NUMBER_INDEX_SEQUENCE = (CONFIRMATION_NUMBER_CHARS.size**CONFIRMATION_NUMBER_CHAR_COUNT).times.to_a.shuffle(random: Random.new(0))
   delegate :sender, to: :listing_transaction
   delegate :payer, to: :listing_transaction
 
@@ -187,8 +189,28 @@ class SenderPayment < Payment
   end
 
   def generate_confirmation_number!
-    # NOTE: assumes a sequential primary key id numbering mechanism. Ensures confirmation number uniqueness.
-    self.update_attribute(:confirmation_number, CONFIRMATION_NUMBER_CHARS.sample(6, random: Random.new(id-1)).join)
+    self.update_attribute(:confirmation_number, confirmation_number_for_id)
   end
 
+  # Gets confirmation number for id
+  # NOTE: assumes a sequential primary key id numbering mechanism. Ensures confirmation number uniqueness.
+  def confirmation_number_for_id
+    confirmation_number_for(id-1) #deduct 1 to become 0 based
+  end
+
+  # Calculates confirmation number for zero-based index, guaranteeing uniqueness
+  # NOTE: currently supports up to 60,466,176 payments. Should be plenty enough.
+  # TODO upgrade in the future when more payments need it by gradually
+  # adding more indexes (e.g. 60,466,176 extra at a time)
+  def confirmation_number_for(index)
+    char_count = CONFIRMATION_NUMBER_CHARS.size
+    n = CONFIRMATION_NUMBER_INDEX_SEQUENCE[index]
+    CONFIRMATION_NUMBER_CHAR_COUNT.times.map do
+      char_index = n % char_count
+      n = n / char_count
+      char_index
+    end.reverse.map do |char_index|
+      CONFIRMATION_NUMBER_CHARS[char_index]
+    end.join
+  end
 end
